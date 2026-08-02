@@ -123,10 +123,14 @@ export function ExportImage({ trigger, filename: filenameProp }: ExportImageProp
     </Button>
   )
 
+  const triggerElement = trigger ?? defaultTrigger
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {trigger ?? defaultTrigger}
+        <button type="button" className="inline-flex">
+          {triggerElement}
+        </button>
       </DialogTrigger>
       <DialogContent
         className="sm:max-w-[420px] rounded-2xl"

@@ -15,7 +15,7 @@ export function CalculatorClientView({
   return (
     <>
       <Toaster />
-      <div className="container mx-auto px-4 py-6 max-w-5xl">
+      <div className="w-full md:max-w-5xl md:mx-auto">
         <EconomicAnalysis
             monthlyConsumption={calcResult.monthlyConsumption}
             monthlySavings={calcResult.monthlySavings}
