@@ -1,0 +1,1 @@
+Khi tôi nói stop (ngưng) thì ngưng! Không edit, không sửa lỗi, không suy nghĩ thêm. Đơn giản là NGƯNG
