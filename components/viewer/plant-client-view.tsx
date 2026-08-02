@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect, useMemo } from 'react'
-import { Button } from '@/components/ui/button'
-import { Loader2, ChevronLeft, ChevronRight } from "lucide-react"
-import { toast, Toaster } from "sonner"
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { Loader2 } from "lucide-react"
+import { Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { AcceptQuoteButton } from "@/components/viewer/accept-quote-button"
 import { TabIndicator } from '@/components/viewer/tab-indicator'
@@ -109,13 +108,16 @@ function PlantTabsView({
   catalog: ProductCatalog
   isExpired: boolean
 }) {
-  const [activeIndex, setActiveIndex] = useState(0)
+  const selectedIndex = quotes.findIndex((q) => q.is_selected)
+  const [activeIndex, setActiveIndex] = useState(
+    selectedIndex >= 0 ? selectedIndex : 0
+  )
   const [activeCalc, setActiveCalc] = useState<SolarAnalysisResult | null>(null)
 
   const activeQuote = quotes[activeIndex]
 
   const allCalcs = useMemo(() => {
-    return quotes.map(q => {
+    return quotes.map((q) => {
       const survey = normalizeSurvey(q?.data)
       const items = normalizeItems(q?.data)
       return calculateSolarAnalysis({ survey, items, catalog })
@@ -134,35 +136,52 @@ function PlantTabsView({
     setActiveIndex(Math.min(quotes.length - 1, activeIndex + 1))
   }
 
+  const pointerStart = useRef<{ x: number; time: number } | null>(null)
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === 'touch') {
+      pointerStart.current = { x: e.clientX, time: Date.now() }
+    }
+  }
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!pointerStart.current) return
+    const { x, time } = pointerStart.current
+    pointerStart.current = null
+    if (e.pointerType !== 'touch') return
+
+    const dx = e.clientX - x
+    const dt = Date.now() - time
+    const absDx = Math.abs(dx)
+
+    if (absDx > 50 && dt < 500) {
+      if (dx > 0) {
+        handlePrev()
+      } else {
+        handleNext()
+      }
+    }
+  }
+
   return (
     <>
-      <TabIndicator currentIndex={activeIndex} totalCount={quotes.length} />
-
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          {quotes.length > 1 && (
-            <>
-              <Button variant="outline" size="sm" onClick={handlePrev} disabled={activeIndex === 0}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                Tùy chọn {activeQuote.option_label}
-                {activeQuote.is_recommended && <span className="ml-1 text-xs">(Gợi ý)</span>}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleNext} disabled={activeIndex === quotes.length - 1}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
+      <TabIndicator
+        currentIndex={activeIndex}
+        totalCount={quotes.length}
+        onPrev={handlePrev}
+        onNext={handleNext}
+      />
 
       {!activeCalc ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-        <>
+<div
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          style={{ touchAction: 'pan-y' }}
+        >
           <EconomicAnalysis
             monthlyConsumption={activeCalc.monthlyConsumption}
             monthlySavings={activeCalc.monthlySavings}
@@ -223,7 +242,7 @@ function PlantTabsView({
               total_amount: activeQuote.total_price,
             }}
           />
-        </>
+        </div>
       )}
     </>
   )
