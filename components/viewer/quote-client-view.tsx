@@ -66,7 +66,7 @@ export function QuoteClientView({
           Chưa có báo giá nào cho địa điểm này.
         </div>
       ) : (
-        <>
+        <div className="mx-auto max-w-5xl">
           <EconomicAnalysis
             monthlyConsumption={calcResult.monthlyConsumption}
             monthlySavings={calcResult.monthlySavings}
@@ -127,7 +127,7 @@ export function QuoteClientView({
               total_amount: quote.total_price,
             }}
           />
-        </>
+        </div>
       )}
     </>
   )
