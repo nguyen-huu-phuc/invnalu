@@ -35,6 +35,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ d
         width={400}
         height={120}
         className="mx-auto"
+        loading="eager"
+        style={{ width: "auto", height: "auto" }}
       />
     </div>
   )
