@@ -1,6 +1,7 @@
 import { getPlantBySlug, getQuotesByPlantId, getProducts } from '@/lib/db'
 import { ProductCatalog } from '@/lib/solar-calculator-logic'
 import { PlantClientView } from '@/components/viewer/plant-client-view'
+import { ShareViewLayout } from '@/components/layouts/share-view-layout'
 import { Toaster } from 'sonner'
 import { notFound } from 'next/navigation'
 
@@ -32,14 +33,14 @@ export default async function PlantSharePage({ params }: { params: Promise<{ slu
   return (
     <>
       <Toaster />
-      <div className="container mx-auto px-0 py-0 sm:px-4 sm:py-6 max-w-5xl">
+      <ShareViewLayout>
         <PlantClientView
           plant={plant}
           quotes={quotes}
           catalog={catalog}
           isExpired={isExpired}
         />
-      </div>
+      </ShareViewLayout>
     </>
   )
 }

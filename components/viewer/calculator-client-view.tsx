@@ -2,7 +2,6 @@
 
 import { Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
-import { AcceptQuoteButton } from "@/components/viewer/accept-quote-button"
 import { SolarAnalysisResult } from "@/lib/solar-calculator-logic"
 
 export function CalculatorClientView({
@@ -13,7 +12,7 @@ export function CalculatorClientView({
   encodedData: string
 }) {
   return (
-    <div className="pt-4 flex flex-col gap-4">
+    <div>
       <Toaster />
       <EconomicAnalysis
             monthlyConsumption={calcResult.monthlyConsumption}
@@ -67,10 +66,6 @@ export function CalculatorClientView({
             businessSavedNormalMoney={calcResult.businessSavedNormalMoney}
             businessSavedPeakMoney={calcResult.businessSavedPeakMoney}
           />
-
-      <AcceptQuoteButton
-        payload={{ data: encodedData, total_amount: calcResult.totalCost }}
-      />
     </div>
   )
 }
