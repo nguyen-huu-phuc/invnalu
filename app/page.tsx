@@ -1,4 +1,7 @@
-import Image from 'next/image'
+import { CalculatorClientView } from '@/components/viewer/calculator-client-view'
+import { decodeShareData } from '@/lib/share-encoding'
+import { getProducts } from '@/lib/db'
+import { ProductCatalog, calculateSolarAnalysis } from '@/lib/solar-calculator-logic'
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ data?: string }> }) {
   const { data } = await searchParams
@@ -19,14 +22,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ d
 
       return <CalculatorClientView calcResult={calcResult} encodedData={data} />
     } catch {
-      return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-          <div className="text-center">
-            <h2 className="text-xl font-bold mb-2">Link không hợp lệ</h2>
-            <p className="text-muted-foreground">Không thể giải mã dữ liệu từ link này.</p>
-          </div>
-        </div>
-      )
+      return null
     }
   }
 
