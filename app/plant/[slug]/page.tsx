@@ -32,7 +32,7 @@ export default async function PlantSharePage({ params }: { params: Promise<{ slu
   return (
     <>
       <Toaster />
-      <div className="container mx-auto px-4 py-6 max-w-5xl">
+      <div className="container mx-auto px-0 py-0 sm:px-4 sm:py-6 max-w-5xl">
         <PlantClientView
           plant={plant}
           quotes={quotes}

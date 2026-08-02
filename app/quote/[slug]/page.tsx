@@ -97,11 +97,13 @@ export default async function QuoteSharePage({ params }: { params: Promise<{ slu
 
   return (
     <>
-      <QuoteClientView
-        quotes={normalizedQuotes}
-        catalog={catalog}
-        calcResult={calcResult}
-      />
+      <div className="container mx-auto px-0 py-0 sm:px-4 sm:py-6 max-w-5xl">
+        <QuoteClientView
+          quotes={normalizedQuotes}
+          catalog={catalog}
+          calcResult={calcResult}
+        />
+      </div>
     </>
   )
 }

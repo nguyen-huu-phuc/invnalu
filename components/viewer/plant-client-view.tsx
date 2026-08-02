@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react"
 import { toast, Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { AcceptQuoteButton } from "@/components/viewer/accept-quote-button"
@@ -93,7 +93,6 @@ export function PlantClientView({
         <PlantTabsView
           quotes={quotes}
           catalog={catalog}
-          plant={plant}
           isExpired={isExpired}
         />
       )}
@@ -104,12 +103,10 @@ export function PlantClientView({
 function PlantTabsView({
   quotes,
   catalog,
-  plant,
   isExpired,
 }: {
   quotes: PlantQuote[]
   catalog: ProductCatalog
-  plant: PlantData
   isExpired: boolean
 }) {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -128,21 +125,6 @@ function PlantTabsView({
   useEffect(() => {
     setActiveCalc(allCalcs[activeIndex])
   }, [allCalcs, activeIndex])
-
-  const handleRefresh = async () => {
-    if (!plant.share_slug) return
-    try {
-      const res = await fetch(`/api/plant/${plant.share_slug}/refresh`, { method: 'POST' })
-      if (res.ok) {
-        toast.success('Đã gia hạn thêm 7 ngày')
-      } else {
-        const err = await res.json()
-        toast.error('Lỗi', { description: err.error || 'Gia hạn thất bại' })
-      }
-    } catch (err: any) {
-      toast.error('Lỗi', { description: err.message || 'Đã xảy ra lỗi' })
-    }
-  }
 
   const handlePrev = () => {
     setActiveIndex(Math.max(0, activeIndex - 1))
@@ -173,13 +155,6 @@ function PlantTabsView({
             </>
           )}
         </div>
-
-        {plant.share_slug && !isExpired && (
-          <Button variant="outline" size="sm" onClick={handleRefresh}>
-            <ExternalLink className="h-4 w-4 mr-1" />
-            Làm mới
-          </Button>
-        )}
       </div>
 
       {!activeCalc ? (
