@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { CalculatorClientView } from '@/components/viewer/calculator-client-view'
 import { decodeShareData } from '@/lib/share-encoding'
 import { getProducts } from '@/lib/db'
