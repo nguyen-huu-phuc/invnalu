@@ -30,11 +30,18 @@ export function TabIndicator({
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-6 py-3 rounded-2xl bg-transparent shadow-xl text-lg transition-all duration-300",
-        show
-          ? "opacity-100 scale-100"
-          : "opacity-0 scale-95 pointer-events-none"
+        "flex items-center gap-2 px-6 py-3 bg-transparent text-lg",
       )}
+      style={{
+        position: 'fixed',
+        bottom: '16px',
+        left: '50%',
+        transform: show ? 'translateX(-50%) scale(2)' : 'translateX(-50%) scale(1.2)',
+        zIndex: 9999,
+        transition: 'opacity 500ms ease-in-out, transform 500ms ease-in-out',
+        opacity: show ? 1 : 0,
+        pointerEvents: show ? 'auto' : 'none',
+      }}
     >
       <button
         type="button"
@@ -50,8 +57,8 @@ export function TabIndicator({
           key={i}
           className={cn(
             "px-1 font-medium",
-            i === currentIndex
-              ? "text-primary font-semibold"
+i === currentIndex
+	              ? "text-black font-normal"
               : "text-muted-foreground"
           )}
         >
