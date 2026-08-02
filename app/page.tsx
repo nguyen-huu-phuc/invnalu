@@ -21,7 +21,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ d
 
       const calcResult = calculateSolarAnalysis({ survey, items, catalog })
 
-      return <CalculatorClientView calcResult={calcResult} encodedData={data} />
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+          <div className="w-full max-w-5xl">
+            <CalculatorClientView calcResult={calcResult} encodedData={data} />
+          </div>
+        </div>
+      )
     } catch {
       return null
     }

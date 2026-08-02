@@ -15,8 +15,7 @@ export function CalculatorClientView({
   return (
     <>
       <Toaster />
-      <div className="w-full md:max-w-5xl md:mx-auto">
-        <EconomicAnalysis
+      <EconomicAnalysis
             monthlyConsumption={calcResult.monthlyConsumption}
             monthlySavings={calcResult.monthlySavings}
             yearlySavings={calcResult.yearlySavings}
@@ -69,10 +68,9 @@ export function CalculatorClientView({
             businessSavedPeakMoney={calcResult.businessSavedPeakMoney}
           />
 
-        <AcceptQuoteButton
-          payload={{ data: encodedData, total_amount: calcResult.totalCost }}
-        />
-      </div>
+      <AcceptQuoteButton
+        payload={{ data: encodedData, total_amount: calcResult.totalCost }}
+      />
     </>
   )
 }
