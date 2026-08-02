@@ -13,7 +13,7 @@ export function CalculatorClientView({
   encodedData: string
 }) {
   return (
-    <>
+    <div className="pt-4 flex flex-col gap-4">
       <Toaster />
       <EconomicAnalysis
             monthlyConsumption={calcResult.monthlyConsumption}
@@ -71,6 +71,6 @@ export function CalculatorClientView({
       <AcceptQuoteButton
         payload={{ data: encodedData, total_amount: calcResult.totalCost }}
       />
-    </>
+    </div>
   )
 }
