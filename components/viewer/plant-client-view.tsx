@@ -5,8 +5,12 @@ import { Loader2 } from "lucide-react"
 import { Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { AcceptQuoteButton } from "@/components/viewer/accept-quote-button"
-import { TabIndicator } from '@/components/viewer/tab-indicator'
+import { MobileIndicator } from '@/components/viewer/mobile-indicator'
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog, SolarAnalysisResult } from '@/lib/solar-calculator-logic'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
 
 export interface PlantQuote {
   id: number
@@ -128,48 +132,11 @@ function PlantTabsView({
     setActiveCalc(allCalcs[activeIndex])
   }, [allCalcs, activeIndex])
 
-  const handlePrev = () => {
-    setActiveIndex(Math.max(0, activeIndex - 1))
-  }
-
-  const handleNext = () => {
-    setActiveIndex(Math.min(quotes.length - 1, activeIndex + 1))
-  }
-
-  const pointerStart = useRef<{ x: number; time: number } | null>(null)
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (e.pointerType === 'touch') {
-      pointerStart.current = { x: e.clientX, time: Date.now() }
-    }
-  }
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (!pointerStart.current) return
-    const { x, time } = pointerStart.current
-    pointerStart.current = null
-    if (e.pointerType !== 'touch') return
-
-    const dx = e.clientX - x
-    const dt = Date.now() - time
-    const absDx = Math.abs(dx)
-
-    if (absDx > 50 && dt < 500) {
-      if (dx > 0) {
-        handlePrev()
-      } else {
-        handleNext()
-      }
-    }
-  }
-
   return (
     <>
-      <TabIndicator
+      <MobileIndicator
         currentIndex={activeIndex}
         totalCount={quotes.length}
-        onPrev={handlePrev}
-        onNext={handleNext}
       />
 
       {!activeCalc ? (
@@ -177,63 +144,75 @@ function PlantTabsView({
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-<div
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          style={{ touchAction: 'pan-y' }}
+        <Swiper
+          modules={[Navigation]}
+          navigation={false}
+          spaceBetween={0}
+          slidesPerView={1}
+          initialSlide={activeIndex}
+          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+          style={{ width: '100%', overflow: 'hidden' }}
         >
-          <EconomicAnalysis
-            monthlyConsumption={activeCalc.monthlyConsumption}
-            monthlySavings={activeCalc.monthlySavings}
-            yearlySavings={activeCalc.yearlySavings}
-            totalCost={activeCalc.totalCost}
-            paybackYears={activeCalc.paybackYears}
-            hasStorage={activeCalc.hasStorage}
-            monthlyProduction={activeCalc.monthlyProduction}
-            dayCoverage={activeCalc.dayCoverage}
-            nightCoverage={activeCalc.nightCoverage}
-            chargeCoverage={activeCalc.chargeCoverage}
-            offpeakCoverage={activeCalc.offpeakCoverage}
-            peakCoverage={activeCalc.peakCoverage}
-            peakExcess={activeCalc.peakExcess}
-            peakNeeded={activeCalc.peakNeeded}
-            offpeakExcess={activeCalc.offpeakExcess}
-            offpeakNeeded={activeCalc.offpeakNeeded}
-            businessNormalKwh={activeCalc.businessNormalKwh}
-            businessPeakKwh={activeCalc.businessPeakKwh}
-            businessOffpeakKwh={activeCalc.businessOffpeakKwh}
-            dayProduced={activeCalc.dayProduced}
-            dayNeeded={activeCalc.dayNeeded}
-            nightAvailable={activeCalc.nightAvailable}
-            nightNeeded={activeCalc.nightNeeded}
-            chargeExcess={activeCalc.chargeExcess}
-            chargeNeeded={activeCalc.chargeNeeded}
-            batteryUsable={activeCalc.batteryUsable}
-            inverterName={activeCalc.inverterName}
-            inverterWarranty={activeCalc.inverterWarranty}
-            inverterCount={activeCalc.inverterCount}
-            panelName={activeCalc.panelName}
-            panelWarranty={activeCalc.panelWarranty}
-            panelCount={activeCalc.panelCount}
-            batteryName={activeCalc.batteryName}
-            batteryWarranty={activeCalc.batteryWarranty}
-            batteryCount={activeCalc.batteryCount}
-            inverterType={activeCalc.inverterType}
-            quoteData={{
-              quote_type: 'solar' as const,
-              system_power: Number(activeCalc.quoteData.system_power),
-              total_price: activeCalc.totalCost,
-              panel_count: activeCalc.panelCount,
-              battery_capacity: activeCalc.hasStorage ? activeCalc.batteryCapacity : 0,
-              phase_type: activeCalc.quoteData.phase_type,
-              daytime_usage: activeCalc.quoteData.daytime_usage,
-              monthly_electricity_kwh: activeCalc.quoteData.monthly_electricity_kwh,
-              monthly_electricity_cost: activeCalc.quoteData.monthly_electricity_cost,
-            }}
-            electricityType={activeCalc.electricityType}
-            businessSavedNormalMoney={activeCalc.businessSavedNormalMoney}
-            businessSavedPeakMoney={activeCalc.businessSavedPeakMoney}
-          />
+          {quotes.map((q, i) => {
+            const calc = allCalcs[i]
+            if (!calc) return null
+            return (
+              <SwiperSlide key={q.id}>
+                <EconomicAnalysis
+                  monthlyConsumption={calc.monthlyConsumption}
+                  monthlySavings={calc.monthlySavings}
+                  yearlySavings={calc.yearlySavings}
+                  totalCost={calc.totalCost}
+                  paybackYears={calc.paybackYears}
+                  hasStorage={calc.hasStorage}
+                  monthlyProduction={calc.monthlyProduction}
+                  dayCoverage={calc.dayCoverage}
+                  nightCoverage={calc.nightCoverage}
+                  chargeCoverage={calc.chargeCoverage}
+                  offpeakCoverage={calc.offpeakCoverage}
+                  peakCoverage={calc.peakCoverage}
+                  peakExcess={calc.peakExcess}
+                  peakNeeded={calc.peakNeeded}
+                  offpeakExcess={calc.offpeakExcess}
+                  offpeakNeeded={calc.offpeakNeeded}
+                  businessNormalKwh={calc.businessNormalKwh}
+                  businessPeakKwh={calc.businessPeakKwh}
+                  businessOffpeakKwh={calc.businessOffpeakKwh}
+                  dayProduced={calc.dayProduced}
+                  dayNeeded={calc.dayNeeded}
+                  nightAvailable={calc.nightAvailable}
+                  nightNeeded={calc.nightNeeded}
+                  chargeExcess={calc.chargeExcess}
+                  chargeNeeded={calc.chargeNeeded}
+                  batteryUsable={calc.batteryUsable}
+                  inverterName={calc.inverterName}
+                  inverterWarranty={calc.inverterWarranty}
+                  inverterCount={calc.inverterCount}
+                  panelName={calc.panelName}
+                  panelWarranty={calc.panelWarranty}
+                  panelCount={calc.panelCount}
+                  batteryName={calc.batteryName}
+                  batteryWarranty={calc.batteryWarranty}
+                  batteryCount={calc.batteryCount}
+                  inverterType={calc.inverterType}
+                  quoteData={{
+                    quote_type: 'solar' as const,
+                    system_power: Number(calc.quoteData.system_power),
+                    total_price: calc.totalCost,
+                    panel_count: calc.panelCount,
+                    battery_capacity: calc.hasStorage ? calc.batteryCapacity : 0,
+                    phase_type: calc.quoteData.phase_type,
+                    daytime_usage: calc.quoteData.daytime_usage,
+                    monthly_electricity_kwh: calc.quoteData.monthly_electricity_kwh,
+                    monthly_electricity_cost: calc.quoteData.monthly_electricity_cost,
+                  }}
+                  electricityType={calc.electricityType}
+                  businessSavedNormalMoney={calc.businessSavedNormalMoney}
+                  businessSavedPeakMoney={calc.businessSavedPeakMoney}
+                />
+              </SwiperSlide>
+            )
+          })}
 
           <AcceptQuoteButton
             payload={{
@@ -242,7 +221,7 @@ function PlantTabsView({
               total_amount: activeQuote.total_price,
             }}
           />
-        </div>
+        </Swiper>
       )}
     </>
   )
