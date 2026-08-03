@@ -4,11 +4,10 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { Loader2 } from "lucide-react"
 import { Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
-import { AcceptQuoteButton } from "@/components/viewer/accept-quote-button"
 import { MobileIndicator } from '@/components/viewer/mobile-indicator'
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog, SolarAnalysisResult } from '@/lib/solar-calculator-logic'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation } from 'swiper/modules'
+import { Navigation, Keyboard } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
@@ -145,8 +144,9 @@ function PlantTabsView({
         </div>
       ) : (
         <Swiper
-          modules={[Navigation]}
+          modules={[Navigation, Keyboard]}
           navigation={false}
+          keyboard={{ enabled: true }}
           spaceBetween={0}
           slidesPerView={1}
           initialSlide={activeIndex}
@@ -159,70 +159,63 @@ function PlantTabsView({
             return (
               <SwiperSlide key={q.id}>
                 <EconomicAnalysis
-                  monthlyConsumption={calc.monthlyConsumption}
-                  monthlySavings={calc.monthlySavings}
-                  yearlySavings={calc.yearlySavings}
-                  totalCost={calc.totalCost}
-                  paybackYears={calc.paybackYears}
-                  hasStorage={calc.hasStorage}
-                  monthlyProduction={calc.monthlyProduction}
-                  dayCoverage={calc.dayCoverage}
-                  nightCoverage={calc.nightCoverage}
-                  chargeCoverage={calc.chargeCoverage}
-                  offpeakCoverage={calc.offpeakCoverage}
-                  peakCoverage={calc.peakCoverage}
-                  peakExcess={calc.peakExcess}
-                  peakNeeded={calc.peakNeeded}
-                  offpeakExcess={calc.offpeakExcess}
-                  offpeakNeeded={calc.offpeakNeeded}
-                  businessNormalKwh={calc.businessNormalKwh}
-                  businessPeakKwh={calc.businessPeakKwh}
-                  businessOffpeakKwh={calc.businessOffpeakKwh}
-                  dayProduced={calc.dayProduced}
-                  dayNeeded={calc.dayNeeded}
-                  nightAvailable={calc.nightAvailable}
-                  nightNeeded={calc.nightNeeded}
-                  chargeExcess={calc.chargeExcess}
-                  chargeNeeded={calc.chargeNeeded}
-                  batteryUsable={calc.batteryUsable}
-                  inverterName={calc.inverterName}
-                  inverterWarranty={calc.inverterWarranty}
-                  inverterCount={calc.inverterCount}
-                  panelName={calc.panelName}
-                  panelWarranty={calc.panelWarranty}
-                  panelCount={calc.panelCount}
-                  batteryName={calc.batteryName}
-                  batteryWarranty={calc.batteryWarranty}
-                  batteryCount={calc.batteryCount}
-                  inverterType={calc.inverterType}
-                  quoteData={{
-                    quote_type: 'solar' as const,
-                    system_power: Number(calc.quoteData.system_power),
-                    total_price: calc.totalCost,
-                    panel_count: calc.panelCount,
-                    battery_capacity: calc.hasStorage ? calc.batteryCapacity : 0,
-                    phase_type: calc.quoteData.phase_type,
-                    daytime_usage: calc.quoteData.daytime_usage,
-                    monthly_electricity_kwh: calc.quoteData.monthly_electricity_kwh,
-                    monthly_electricity_cost: calc.quoteData.monthly_electricity_cost,
-                  }}
-                  electricityType={calc.electricityType}
-                  businessSavedNormalMoney={calc.businessSavedNormalMoney}
-                  businessSavedPeakMoney={calc.businessSavedPeakMoney}
-                />
-              </SwiperSlide>
+                    monthlyConsumption={calc.monthlyConsumption}
+                    monthlySavings={calc.monthlySavings}
+                    yearlySavings={calc.yearlySavings}
+                    totalCost={calc.totalCost}
+                    paybackYears={calc.paybackYears}
+                    hasStorage={calc.hasStorage}
+                    monthlyProduction={calc.monthlyProduction}
+                    dayCoverage={calc.dayCoverage}
+                    nightCoverage={calc.nightCoverage}
+                    chargeCoverage={calc.chargeCoverage}
+                    offpeakCoverage={calc.offpeakCoverage}
+                    peakCoverage={calc.peakCoverage}
+                    peakExcess={calc.peakExcess}
+                    peakNeeded={calc.peakNeeded}
+                    offpeakExcess={calc.offpeakExcess}
+                    offpeakNeeded={calc.offpeakNeeded}
+                    businessNormalKwh={calc.businessNormalKwh}
+                    businessPeakKwh={calc.businessPeakKwh}
+                    businessOffpeakKwh={calc.businessOffpeakKwh}
+                    dayProduced={calc.dayProduced}
+                    dayNeeded={calc.dayNeeded}
+                    nightAvailable={calc.nightAvailable}
+                    nightNeeded={calc.nightNeeded}
+                    chargeExcess={calc.chargeExcess}
+                    chargeNeeded={calc.chargeNeeded}
+                    batteryUsable={calc.batteryUsable}
+                    inverterName={calc.inverterName}
+                    inverterWarranty={calc.inverterWarranty}
+                    inverterCount={calc.inverterCount}
+                    panelName={calc.panelName}
+                    panelWarranty={calc.panelWarranty}
+                    panelCount={calc.panelCount}
+                    batteryName={calc.batteryName}
+                    batteryWarranty={calc.batteryWarranty}
+                    batteryCount={calc.batteryCount}
+                    inverterType={calc.inverterType}
+                    quoteData={{
+                      quote_type: 'solar' as const,
+                      system_power: Number(calc.quoteData.system_power),
+                      total_price: calc.totalCost,
+                      panel_count: calc.panelCount,
+                      battery_capacity: calc.hasStorage ? calc.batteryCapacity : 0,
+                      phase_type: calc.quoteData.phase_type,
+                      daytime_usage: calc.quoteData.daytime_usage,
+                      monthly_electricity_kwh: calc.quoteData.monthly_electricity_kwh,
+                      monthly_electricity_cost: calc.quoteData.monthly_electricity_cost,
+                    }}
+                    electricityType={calc.electricityType}
+                    businessSavedNormalMoney={calc.businessSavedNormalMoney}
+                    businessSavedPeakMoney={calc.businessSavedPeakMoney}
+                  />
+                </SwiperSlide>
             )
           })}
 
-          <AcceptQuoteButton
-            payload={{
-              quote_id: activeQuote.id,
-              data: activeQuote.data,
-              total_amount: activeQuote.total_price,
-            }}
-          />
         </Swiper>
-      )}
-    </>
+       )}
+      </>
   )
 }
