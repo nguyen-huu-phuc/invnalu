@@ -1,9 +1,29 @@
+import type { Metadata } from "next"
 import { getPlantBySlug, getQuotesByPlantId, getProducts } from '@/lib/db'
-import { ProductCatalog } from '@/lib/solar-calculator-logic'
 import { PlantClientView } from '@/components/viewer/plant-client-view'
 import { ShareViewLayout } from '@/components/layouts/share-view-layout'
 import { Toaster } from 'sonner'
 import { notFound } from 'next/navigation'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const plant = await getPlantBySlug(slug)
+
+  if (!plant) {
+    return { title: "Phương án", openGraph: { title: "Phương án", images: ["/nalu-logo-trans-512x234.png"] }, twitter: { card: "summary_large_image", title: "Phương án", images: ["/nalu-logo-trans-512x234.png"] } }
+  }
+
+  const plantName = plant.name || ""
+  const customerName = plant.customer_name || ""
+  const title = `Phương án ${plantName} ${customerName}`
+  const description = "Hãy chọn phương án tối ưu"
+
+  return { title, description, openGraph: { title, description, images: ["/nalu-logo-trans-512x234.png"] }, twitter: { card: "summary_large_image", title, description, images: ["/nalu-logo-trans-512x234.png"] } }
+}
 
 export default async function PlantSharePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

@@ -9,8 +9,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "inv.nalu.vn | Xem báo giá",
-  description: "Viewer economic analysis",
+  metadataBase: new URL("https://cal.nalu.vn"),
+  title: "Nalu | Xem báo giá",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "Nalu | Xem báo giá",
+    images: ["/nalu-logo-trans-512x234.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nalu | Xem báo giá",
+    images: ["/nalu-logo-trans-512x234.png"],
+  },
 };
 
 export default function RootLayout({

@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { notFound } from 'next/navigation'
 import { getQuoteProposalBySlug, getQuotesByProposalId, getProducts } from '@/lib/db'
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog } from '@/lib/solar-calculator-logic'
@@ -66,6 +67,56 @@ function normalizeItems(data: any): ItemInfo[] {
   const items = data?.items || data?.itemDetails || []
   if (Array.isArray(items)) return items
   return []
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const data = await loadData(slug)
+
+  if (!data) {
+    return { title: "Báo giá", openGraph: { title: "Báo giá", images: ["/nalu-logo-trans-512x234.png"] }, twitter: { card: "summary_large_image", title: "Báo giá", images: ["/nalu-logo-trans-512x234.png"] } }
+  }
+
+  const { proposal, quotes, products } = data
+
+  const plantName = proposal.plant_name || ""
+  const customerName = proposal.customer_name || ""
+  const title = `Báo giá ${plantName} ${customerName}`
+
+  if (quotes.length === 0) {
+    return { title, openGraph: { title, images: ["/nalu-logo-trans-512x234.png"] }, twitter: { card: "summary_large_image", title, images: ["/nalu-logo-trans-512x234.png"] } }
+  }
+
+  const normalizedQuotes: Quote[] = quotes.map((q) => ({
+    ...q,
+    data: typeof q.data === "string" ? JSON.parse(q.data) : q.data,
+  }))
+
+  const catalog: ProductCatalog = {
+    inverters: products.inverters,
+    panels: products.panels,
+    batteries: products.batteries,
+    components: products.components,
+  }
+
+  const firstQuote = normalizedQuotes[0]
+  const survey = normalizeSurvey(firstQuote?.data)
+  const items = normalizeItems(firstQuote?.data)
+  const calcResult = calculateSolarAnalysis({ survey, items, catalog })
+
+  const inverterType =
+    calcResult.inverterType === "hybrid" ? "hybrid" : "ongrid"
+  const systemPower = calcResult.quoteData.system_power.toFixed(1)
+  let description = `Hệ thống ${inverterType} công suất ${systemPower} kWp`
+  if (calcResult.hasStorage && calcResult.batteryCapacity > 0) {
+    description += `, lưu trữ ${Number(calcResult.batteryCapacity).toFixed(1)} kWh`
+  }
+
+  return { title, description, openGraph: { title, description, images: ["/nalu-logo-trans-512x234.png"] }, twitter: { card: "summary_large_image", title, description, images: ["/nalu-logo-trans-512x234.png"] } }
 }
 
 export default async function QuoteSharePage({ params }: { params: Promise<{ slug: string }> }) {
