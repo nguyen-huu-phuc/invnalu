@@ -67,7 +67,9 @@ export function QuoteClientView({
       ) : (
         <>
           <EconomicAnalysis
-              monthlyConsumption={calcResult.monthlyConsumption}
+            monthlyConsumption={calcResult.monthlyConsumption}
+            quoteId={quote.id}
+            quoteSelected={quote.is_selected}
               monthlySavings={calcResult.monthlySavings}
               yearlySavings={calcResult.yearlySavings}
               totalCost={calcResult.totalCost}

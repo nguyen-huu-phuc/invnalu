@@ -158,8 +158,10 @@ function PlantTabsView({
             if (!calc) return null
             return (
               <SwiperSlide key={q.id}>
-                <EconomicAnalysis
+                 <EconomicAnalysis
                     monthlyConsumption={calc.monthlyConsumption}
+                    quoteId={q.id}
+                    quoteSelected={q.is_selected}
                     monthlySavings={calc.monthlySavings}
                     yearlySavings={calc.yearlySavings}
                     totalCost={calc.totalCost}

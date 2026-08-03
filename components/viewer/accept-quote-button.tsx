@@ -1,8 +1,18 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { Loader2, Send } from "lucide-react"
-import { FloatingActionButton } from "@/components/viewer/floating-action-button"
+import { useState } from "react"
+import { CircleCheck, Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { cn } from "@/lib/utils"
 
 export interface AcceptPayload {
   quote_id?: number
@@ -10,17 +20,29 @@ export interface AcceptPayload {
   total_amount?: number | null
 }
 
-export function AcceptQuoteButton({ payload }: { payload: AcceptPayload }) {
+interface AcceptQuoteButtonProps {
+  payload: AcceptPayload
+  accepted?: boolean
+}
+
+export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }: AcceptQuoteButtonProps) {
   const [accepting, setAccepting] = useState(false)
+  const [accepted, setAccepted] = useState(initialAccepted)
+  const [open, setOpen] = useState(false)
 
   const handleAccept = async () => {
+    if (accepted || !payload.quote_id) return
     setAccepting(true)
     try {
-      await fetch("/api/accept-quote", {
+      const res = await fetch("/api/accept-quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
+      if (res.ok) {
+        setAccepted(true)
+      }
+      setOpen(false)
     } catch {
       // silently ignore
     } finally {
@@ -29,18 +51,57 @@ export function AcceptQuoteButton({ payload }: { payload: AcceptPayload }) {
   }
 
   return (
-    <FloatingActionButton
-      position="bottom-right"
-      size="lg"
-      draggable
-      onClick={handleAccept}
-      disabled={accepting}
-    >
-      {accepting ? (
-        <Loader2 className="h-6 w-6 animate-spin" />
-      ) : (
-        <Send className="h-6 w-6" />
-      )}
-    </FloatingActionButton>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="fab"
+          size="icon"
+          className={cn(
+            "absolute top-4 right-4 z-10",
+            "h-14 w-14 rounded-full border-0",
+            accepted && "cursor-default",
+          )}
+          onClick={handleAccept}
+          disabled={accepting}
+          aria-label={accepted ? "Đã chốt báo giá" : "Chốt báo giá"}
+        >
+          {accepting ? (
+            <Loader2 className="h-6 w-6 animate-spin" />
+          ) : (
+            <CircleCheck
+              style={{
+                width: "30px",
+                height: "30px",
+                transform: "translateY(-8px)",
+                color: accepted ? "#2563eb" : "#9ca3af",
+              }}
+            />
+          )}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Xác nhận chốt báo giá</DialogTitle>
+          <DialogDescription>
+            Nalu sẽ nhanh chóng liên hệ và phục vụ bạn.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={accepting}
+          >
+            Hủy
+          </Button>
+          <Button
+            onClick={handleAccept}
+            disabled={accepting}
+          >
+            {accepting ? "Đang gửi..." : "Xác nhận chốt"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

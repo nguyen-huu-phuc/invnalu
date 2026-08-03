@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { ExportImage } from "@/components/export-image"
+import { AcceptQuoteButton, type AcceptPayload } from "@/components/viewer/accept-quote-button"
 import { TrendingUp, DollarSign, Clock, Cpu, Sun, Moon, Battery, Box, Zap, Activity, Server, SolarPanel, BatteryCharging, CircuitBoard, PiggyBank } from "lucide-react"
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react"
 import { formatVND } from "@/lib/utils"
@@ -57,9 +58,11 @@ interface EconomicAnalysisProps {
     monthly_electricity_kwh: number
     monthly_electricity_cost: number
   }
-  electricityType?: "residential" | "business"
-  businessSavedNormalMoney?: number
-  businessSavedPeakMoney?: number
+   electricityType?: "residential" | "business"
+   businessSavedNormalMoney?: number
+   businessSavedPeakMoney?: number
+   quoteId?: number
+   quoteSelected?: boolean
 }
 
 function formatWarranty(months?: number): string {
@@ -110,8 +113,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   inverterType,
   quoteData,
   electricityType,
-  businessSavedNormalMoney,
-  businessSavedPeakMoney,
+   businessSavedNormalMoney,
+   businessSavedPeakMoney,
+   quoteId,
+   quoteSelected,
 }, ref) => {
   const [mounted, setMounted] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
@@ -132,8 +137,18 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   const getBarWidth = (val: number) => `${Math.min(100, val)}%`
 
   return (
-    <div ref={cardRef}>
+    <div ref={cardRef} className="relative">
       <Card className="border-primary/20 shadow-sm" data-export="quote">
+       {quoteId && (
+         <AcceptQuoteButton
+           payload={{
+             quote_id: quoteId,
+             data: quoteData,
+             total_amount: quoteData?.total_price,
+           } as AcceptPayload}
+           accepted={quoteSelected}
+         />
+       )}
         <CardContent className="pt-0 space-y-3 sm:space-y-5">
             <div className="text-sm">
             <div className="flex items-center gap-2">
@@ -253,11 +268,11 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <span className="font-medium text-foreground text-sm">{monthlyProduction?.toFixed(0)} kWh/tháng</span>
           </div>
           <div className="space-y-1">
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <Sun className="w-4 h-4 text-amber-500" />
                 <span className="text-muted-foreground">
-                  {electricityType === "business" ? "Bình thường" : "Ban ngày"} {dayProduced?.toFixed(1)}/{dayNeeded?.toFixed(1)} kWh
+                  {electricityType === "business" ? "Bình thường" : "Ban ngày"} {dayProduced?.toFixed(1)}/{dayNeeded?.toFixed(1)}
                 </span>
               </div>
               <span className="font-medium text-amber-500">{dayCoverage?.toFixed(0)}%</span>
@@ -274,10 +289,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           </div>
           {hasStorage && electricityType === "business" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <Battery className="w-4 h-4 text-blue-500" />
-                  <span className="text-muted-foreground">Cao điểm {(chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) : 0)?.toFixed(1)}/{(peakNeeded || 0)?.toFixed(1)} kWh</span>
+                  <span className="text-muted-foreground">Cao điểm {(chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) : 0)?.toFixed(1)}/{(peakNeeded || 0)?.toFixed(1)}</span>
                 </div>
                 <span className="font-medium text-blue-500">{peakCoverage?.toFixed(0)}%</span>
               </div>
@@ -294,10 +309,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           )}
           {hasStorage && electricityType === "business" && (
               <div className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <Battery className="w-4 h-4 text-chart-3" />
-                    <span className="text-muted-foreground">Thấp điểm {Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)}/{(offpeakNeeded || 0)?.toFixed(1)} kWh</span>
+                    <span className="text-muted-foreground">Thấp điểm {Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)}/{(offpeakNeeded || 0)?.toFixed(1)}</span>
                   </div>
                   <span className="font-medium text-chart-3">{offpeakCoverage?.toFixed(0)}%</span>
                 </div>
@@ -314,13 +329,13 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           )}
           {hasStorage && electricityType === "business" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <BatteryCharging className="w-4 h-4 text-green-500" />
                   {(() => {
                     const needed = Math.min(batteryUsable || 0, (peakNeeded || 0) + (offpeakNeeded || 0)) / 0.9
                     const coverage = needed > 0 ? (chargeExcess || 0) / needed * 100 : 0
-                    return <span className="text-muted-foreground">Sạc pin {(chargeExcess || 0).toFixed(1)}/{needed.toFixed(1)} kWh</span>
+                    return <span className="text-muted-foreground">Sạc pin {(chargeExcess || 0).toFixed(1)}/{needed.toFixed(1)}</span>
                   })()}
                 </div>
                 {(() => {
@@ -348,10 +363,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           )}
           {hasStorage && electricityType === "residential" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <Moon className="w-4 h-4 text-blue-500" />
-                  <span className="text-muted-foreground">Ban đêm {nightAvailable?.toFixed(1)}/{nightNeeded?.toFixed(1)} kWh</span>
+                  <span className="text-muted-foreground">Ban đêm {nightAvailable?.toFixed(1)}/{nightNeeded?.toFixed(1)}</span>
                 </div>
                 <span className="font-medium text-blue-500">{nightCoverage?.toFixed(0)}%</span>
               </div>
@@ -368,10 +383,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           )}
           {hasStorage && electricityType === "residential" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <BatteryCharging className="w-4 h-4 text-green-500" />
-                  <span className="text-muted-foreground">Sạc pin {chargeExcess?.toFixed(1)}/{chargeNeeded?.toFixed(1)} kWh</span>
+                  <span className="text-muted-foreground">Sạc pin {chargeExcess?.toFixed(1)}/{chargeNeeded?.toFixed(1)}</span>
                 </div>
                 <span className="font-medium text-green-500">{chargeCoverage?.toFixed(0)}%</span>
               </div>
@@ -389,10 +404,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {!hasStorage && electricityType === "business" && (
             <>
               <div className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <Battery className="w-4 h-4 text-chart-3" />
-                    <span className="text-muted-foreground">Thấp điểm {Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)}/{(offpeakNeeded || 0)?.toFixed(1)} kWh</span>
+                    <span className="text-muted-foreground">Thấp điểm {Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)}/{(offpeakNeeded || 0)?.toFixed(1)}</span>
                   </div>
                   <span className="font-medium text-chart-3">{offpeakCoverage?.toFixed(0)}%</span>
                 </div>
@@ -407,10 +422,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
 <BatteryCharging className="w-4 h-4 text-green-500" />
-                    <span className="text-muted-foreground">Sạc pin {chargeExcess?.toFixed(1)}/{chargeNeeded?.toFixed(1)} kWh</span>
+<span className="text-muted-foreground">Sạc pin {chargeExcess?.toFixed(1)}/{chargeNeeded?.toFixed(1)}</span>
                   </div>
                   <span className="font-medium text-green-500">{chargeCoverage?.toFixed(0)}%</span>
                 </div>
