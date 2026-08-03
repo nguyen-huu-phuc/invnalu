@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     const proposalId = proposalResult.rows[0]?.proposal_id
 
     const confirmation = await client.query(
-      'INSERT INTO quote_confirmations (quote_id, proposal_id, total_amount, snapshot) VALUES ($1, $2, $3, $4) RETURNING *',
+      'INSERT INTO quote_confirmations (quote_id, proposal_id, total_amount, snapshot) VALUES ($1, $2, $3, $4) ON CONFLICT (quote_id) DO UPDATE SET total_amount = EXCLUDED.total_amount, snapshot = EXCLUDED.snapshot RETURNING *',
       [quote_id, proposalId, total_amount || null, JSON.stringify(data)]
     )
 

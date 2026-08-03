@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { CircleCheck, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,6 +29,12 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
   const [accepting, setAccepting] = useState(false)
   const [accepted, setAccepted] = useState(initialAccepted)
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (initialAccepted && !accepted) {
+      setAccepted(true)
+    }
+  }, [initialAccepted, accepted])
 
   const handleAccept = async () => {
     if (accepted || !payload.quote_id) return
@@ -61,7 +67,7 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
             "h-14 w-14 rounded-full border-0",
             accepted && "cursor-default",
           )}
-          onClick={handleAccept}
+          onClick={undefined}
           disabled={accepting}
           aria-label={accepted ? "Đã chốt báo giá" : "Chốt báo giá"}
         >
