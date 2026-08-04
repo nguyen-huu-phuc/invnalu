@@ -106,7 +106,7 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
           <DialogHeader>
             <DialogTitle>Xác nhận chốt báo giá?</DialogTitle>
             <DialogDescription>
-              Bạn muốn chốt báo giá này. Sau khi xác nhận, báo giá sẽ được ghi nhận và nhận được hỗ trợ từ đội ngũ chúng tôi.
+              Nalu sẽ sớm liên hệ và phục vụ bạn!
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -129,8 +129,16 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
 
       {showAck && (
         <span
+          style={{
+            position: "absolute",
+            top: "10%",
+            right: "80%",
+            marginRight: "4px",
+            transform: "translateY(-50%)",
+            zIndex: 10,
+          }}
           className={cn(
-            "absolute top-full right-0 mt-1 px-2 py-1 text-xs font-medium text-background bg-muted-foreground/80 rounded shadow-lg whitespace-nowrap",
+            "px-2 py-1 text-xs font-medium text-background bg-muted-foreground/80 rounded shadow-lg whitespace-nowrap",
             "pointer-events-none animate-in fade-in-0 zoom-in-95",
           )}
         >
