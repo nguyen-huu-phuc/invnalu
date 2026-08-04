@@ -266,7 +266,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         </div>
 
         {/* Sản lượng Section */}
-        <div className="p-3 rounded-xl border border-border/60 bg-secondary/30 space-y-3">
+        <div className="p-3 rounded-xl border border-border/60 bg-muted/10 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-green-600" />
@@ -453,7 +453,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-2 gap-3">
           {/* Chi phí lắp đặt */}
-          <div className="p-3 sm:p-4 rounded-xl bg-amber-500/5 border border-amber-500/10">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-amber-500/10">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
                <span className="text-sm text-muted-foreground">Chi phí lắp đặt</span>
@@ -464,7 +464,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           </div>
 
           {/* Tiết kiệm/tháng */}
-          <div className="p-3 sm:p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-blue-500/10">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
               <PiggyBank className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">Tiết kiệm/tháng</span>
@@ -475,7 +475,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           </div>
 
           {/* Hoàn vốn */}
-          <div className="p-3 sm:p-4 rounded-lg bg-chart-3/10 border border-chart-3/20">
+          <div className="p-3 sm:p-4 rounded-lg bg-muted/10 border border-chart-3/20">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
               <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-chart-3" />
               <span className="text-sm text-muted-foreground">Hoàn vốn</span>
@@ -486,7 +486,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           </div>
 
           {/* Tiết kiệm/năm */}
-          <div className="p-3 sm:p-4 rounded-xl bg-primary/5 border border-primary/10">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-primary/10">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
               <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
               <span className="text-sm text-muted-foreground">Tiết kiệm/năm</span>

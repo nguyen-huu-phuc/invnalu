@@ -128,7 +128,7 @@ export function ExportImageContent({ trigger, filename: filenameProp }: ExportIm
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button type="button" className="inline-flex">
+        <button type="button" className="inline-flex" aria-label="Xuất ảnh báo giá">
           {triggerElement}
         </button>
       </DialogTrigger>
