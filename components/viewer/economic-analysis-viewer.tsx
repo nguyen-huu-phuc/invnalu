@@ -8,6 +8,18 @@ import { TrendingUp, DollarSign, Clock, Cpu, Sun, Moon, Battery, Box, Zap, Activ
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react"
 import { formatVND } from "@/lib/utils"
 
+function formatVNDWithMutedCurrency(amount: number | null | undefined, currencyColor: string) {
+  const formatted = formatVND(amount)
+  if (formatted === "-") return <span className={currencyColor}>-</span>
+  const parts = formatted.split(" ")
+  return (
+    <>
+      <span className={currencyColor}>{parts[0]}</span>
+      <span className="text-muted-foreground"> {parts[1]}</span>
+    </>
+  )
+}
+
 const AcceptQuoteButton = dynamic(
   () => import("@/components/viewer/accept-quote-button").then((m) => m.AcceptQuoteButton),
   { ssr: false }
@@ -174,7 +186,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <div className="px-3 py-2">
               <div className="flex items-center gap-2">
                 <Cpu className="w-3.5 h-3.5 text-green-600 shrink-0" />
-                <span className="text-sm font-medium text-foreground truncate">Biến tần {inverterName}</span>
+                <span className="text-sm text-foreground truncate">Biến tần {inverterName}</span>
               </div>
               <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: {inverterCount} · Bảo hành: {formatWarranty(inverterWarranty)}</span>
             </div>
@@ -183,7 +195,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <div className="px-3 py-2">
               <div className="flex items-center gap-2">
                 <SolarPanel className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                <span className="text-sm font-medium text-foreground truncate">Tấm pin {panelName}</span>
+                <span className="text-sm text-foreground truncate">Tấm pin {panelName}</span>
               </div>
               <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: {panelCount} · Bảo hành: {formatWarranty(panelWarranty)}</span>
             </div>
@@ -192,7 +204,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <div className="px-3 py-2">
               <div className="flex items-center gap-2">
                 <Battery className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                <span className="text-sm font-medium text-foreground truncate">Pin {batteryName}</span>
+                <span className="text-sm text-foreground truncate">Pin {batteryName}</span>
               </div>
               <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: {batteryCount} · Bảo hành: {formatWarranty(batteryWarranty)}</span>
             </div>
@@ -200,7 +212,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           <div className="px-3 py-2">
             <div className="flex items-center gap-2">
               <CircuitBoard className="w-3.5 h-3.5 text-chart-3 shrink-0" />
-              <span className="text-sm font-medium text-foreground truncate">Tủ, thiết bị bảo vệ khác</span>
+              <span className="text-sm text-foreground truncate">Tủ, thiết bị bảo vệ khác</span>
             </div>
             <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: 1 · Bảo hành: 1 năm</span>
           </div>
@@ -220,7 +232,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-2">
                       <Cpu className="w-4 h-4 text-green-600 shrink-0" />
-                      <span className="font-medium text-foreground truncate">Biến tần {inverterName}</span>
+                      <span className="text-foreground truncate">Biến tần {inverterName}</span>
                     </div>
                   </td>
                   <td className="px-3 py-2.5 text-foreground text-center">{inverterCount}</td>
@@ -232,7 +244,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-2">
                       <SolarPanel className="w-4 h-4 text-amber-500 shrink-0" />
-                      <span className="font-medium text-foreground truncate">Tấm pin {panelName}</span>
+                      <span className="text-foreground truncate">Tấm pin {panelName}</span>
                     </div>
                   </td>
                   <td className="px-3 py-2.5 text-foreground text-center">{panelCount}</td>
@@ -244,7 +256,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-2">
                       <Battery className="w-4 h-4 text-blue-500 shrink-0" />
-                      <span className="font-medium text-foreground truncate">Pin lưu trữ {batteryName}</span>
+                      <span className="text-foreground truncate">Pin lưu trữ {batteryName}</span>
                     </div>
                   </td>
                   <td className="px-3 py-2.5 text-foreground text-center">{batteryCount}</td>
@@ -255,7 +267,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 <td className="px-3 py-2.5">
                   <div className="flex items-center gap-2">
                     <CircuitBoard className="w-4 h-4 text-chart-3 shrink-0" />
-                    <span className="font-medium text-foreground truncate">Tủ, thiết bị bảo vệ khác</span>
+                    <span className="text-foreground truncate">Tủ, thiết bị bảo vệ khác</span>
                   </div>
                 </td>
                   <td className="px-3 py-2.5 text-foreground text-center">1</td>
@@ -453,46 +465,46 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-2 gap-3">
           {/* Chi phí lắp đặt */}
-          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-amber-500/10">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-amber-500/20">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
                <span className="text-sm text-muted-foreground">Chi phí lắp đặt</span>
             </div>
-            <p className="text-lg sm:text-2xl font-bold text-amber-500 truncate text-center" suppressHydrationWarning>
-                {formatVND(roundedCost)}
+            <p className="text-lg sm:text-2xl text-amber-500 truncate text-center" suppressHydrationWarning>
+                {formatVNDWithMutedCurrency(roundedCost, "text-amber-500")}
             </p>
           </div>
 
           {/* Tiết kiệm/tháng */}
-          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-blue-500/10">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-blue-500/20">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
               <PiggyBank className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">Tiết kiệm/tháng</span>
             </div>
-            <p className="text-lg sm:text-2xl font-bold text-blue-500 truncate text-center" suppressHydrationWarning>
-                {formatVND(roundedMonthlySavings)}
+            <p className="text-lg sm:text-2xl text-blue-500 truncate text-center" suppressHydrationWarning>
+                {formatVNDWithMutedCurrency(roundedMonthlySavings, "text-blue-500")}
             </p>
           </div>
 
           {/* Hoàn vốn */}
-          <div className="p-3 sm:p-4 rounded-lg bg-muted/10 border border-chart-3/20">
+          <div className="p-3 sm:p-4 rounded-lg bg-muted/10 border border-chart-3/30">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
               <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-chart-3" />
               <span className="text-sm text-muted-foreground">Hoàn vốn</span>
             </div>
-            <p className="text-lg sm:text-2xl font-bold text-chart-3 text-center">
-               {paybackYears.toFixed(1)}<span className="text-muted-foreground/70"> năm</span>
+            <p className="text-lg sm:text-2xl text-chart-3 text-center">
+               {paybackYears.toFixed(1)}               <span className="text-muted-foreground"> năm</span>
             </p>
           </div>
 
           {/* Tiết kiệm/năm */}
-          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-primary/10">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-primary/20">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
               <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
               <span className="text-sm text-muted-foreground">Tiết kiệm/năm</span>
             </div>
-            <p className="text-lg sm:text-2xl font-bold text-green-600 truncate text-center" suppressHydrationWarning>
-                {formatVND(roundedYearlySavings)}
+            <p className="text-lg sm:text-2xl text-green-600 truncate text-center" suppressHydrationWarning>
+                {formatVNDWithMutedCurrency(roundedYearlySavings, "text-green-600")}
             </p>
           </div>
         </div>
