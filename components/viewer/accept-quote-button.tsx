@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { CircleCheck, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -60,7 +61,10 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
     <Dialog
       open={open}
       onOpenChange={(newOpen) => {
-        if (accepted) return
+        if (accepted && newOpen) {
+          toast.success("Đã chốt báo giá rồi!")
+          return
+        }
         setOpen(newOpen)
       }}
     >
