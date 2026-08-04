@@ -57,7 +57,13 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(newOpen) => {
+        if (accepted) return
+        setOpen(newOpen)
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           variant="fab"
