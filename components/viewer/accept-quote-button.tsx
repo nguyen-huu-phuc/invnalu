@@ -65,78 +65,78 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(newOpen) => {
-        if (accepted && newOpen) {
-          handleAck()
-          return
-        }
-        setOpen(newOpen)
-      }}
-    >
-      <DialogTrigger asChild>
-        <Button
-          variant="fab"
-          size="icon"
-          className={cn(
-            "absolute top-4 right-4 z-10",
-            "h-14 w-14 rounded-full border-0",
-            accepted && "cursor-default",
-          )}
-          onClick={undefined}
-          disabled={accepting}
-          aria-label={accepted ? "Đã chốt báo giá" : "Chốt báo giá"}
-        >
-          {accepting ? (
-            <Loader2 className="h-6 w-6 animate-spin" />
-          ) : (
-            <CircleCheck
-              style={{
-                width: "30px",
-                height: "30px",
-                transform: "translateY(-8px)",
-                color: accepted ? "#2563eb" : "#9ca3af",
-              }}
-            />
-          )}
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Xác nhận chốt báo giá?</DialogTitle>
-          <DialogDescription>
-            Bạn muốn chốt báo giá này. Sau khi xác nhận, báo giá sẽ được ghi nhận và nhận được hỗ trợ từ đội ngũ chúng tôi.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
+    <div className="absolute top-4 right-4 z-10">
+      <Dialog
+        open={open}
+        onOpenChange={(newOpen) => {
+          if (accepted && newOpen) {
+            handleAck()
+            return
+          }
+          setOpen(newOpen)
+        }}
+      >
+        <DialogTrigger asChild>
           <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
+            variant="fab"
+            size="icon"
+            className={cn(
+              "h-14 w-14 rounded-full border-0",
+              accepted && "cursor-default",
+            )}
+            onClick={undefined}
             disabled={accepting}
+            aria-label={accepted ? "Đã chốt báo giá" : "Chốt báo giá"}
           >
-            Hủy
+            {accepting ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <CircleCheck
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  transform: "translateY(-8px)",
+                  color: accepted ? "#2563eb" : "#9ca3af",
+                }}
+              />
+            )}
           </Button>
-          <Button
-            onClick={handleAccept}
-            disabled={accepting}
-          >
-            {accepting ? "Đang gửi..." : "Xác nhận chốt"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Xác nhận chốt báo giá?</DialogTitle>
+            <DialogDescription>
+              Bạn muốn chốt báo giá này. Sau khi xác nhận, báo giá sẽ được ghi nhận và nhận được hỗ trợ từ đội ngũ chúng tôi.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={accepting}
+            >
+              Hủy
+            </Button>
+            <Button
+              onClick={handleAccept}
+              disabled={accepting}
+            >
+              {accepting ? "Đang gửi..." : "Xác nhận chốt"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {showAck && (
         <span
           className={cn(
             "absolute top-full right-0 mt-1 px-2 py-1 text-xs font-medium text-background bg-muted-foreground/80 rounded shadow-lg whitespace-nowrap",
-            "pointer-events-none",
+            "pointer-events-none animate-in fade-in-0 zoom-in-95",
           )}
-          style={{ zIndex: 1000 }}
         >
           Đã chốt rồi!
         </span>
       )}
-    </Dialog>
+    </div>
   )
 }
