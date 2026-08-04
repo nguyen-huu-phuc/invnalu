@@ -31,12 +31,26 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
   const [open, setOpen] = useState(false)
   const [showAck, setShowAck] = useState(false)
   const ackTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const [blink, setBlink] = useState(false)
 
   useEffect(() => {
     if (initialAccepted && !accepted) {
       setAccepted(true)
     }
   }, [initialAccepted, accepted])
+
+  useEffect(() => {
+    if (accepted) {
+      setBlink(false)
+      return
+    }
+    setBlink(false)
+    const id = setInterval(() => {
+      setBlink(true)
+      setTimeout(() => setBlink(false), 2000)
+    }, 6000)
+    return () => clearInterval(id)
+  }, [accepted])
 
   const handleAck = () => {
     setShowAck(true)
@@ -88,18 +102,20 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
             disabled={accepting}
             aria-label={accepted ? "Đã chốt báo giá" : "Chốt báo giá"}
           >
-            {accepting ? (
-              <Loader2 className="h-6 w-6 animate-spin" />
-            ) : (
-              <CircleCheck
-                style={{
-                  width: "30px",
-                  height: "30px",
-                  transform: "translateY(-8px)",
-                  color: accepted ? "#2563eb" : "#9ca3af",
-                }}
-              />
-            )}
+             {accepting ? (
+               <Loader2 className="h-6 w-6 animate-spin" />
+             ) : blink ? (
+               <span className="text-sm text-muted-foreground" style={{ transform: "translateY(-8px)", display: "inline-block" }}>CHỐT</span>
+             ) : (
+               <CircleCheck
+                 style={{
+                   width: "30px",
+                   height: "30px",
+                   transform: "translateY(-8px)",
+                   color: accepted ? "#2563eb" : "#9ca3af",
+                 }}
+               />
+             )}
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -142,8 +158,8 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
             "pointer-events-none animate-in fade-in-0 zoom-in-95",
           )}
         >
-          Đã chốt rồi!
-        </span>
+        Đã chốt rồi!
+      </span>
       )}
     </div>
   )
