@@ -118,7 +118,7 @@ FROM quotes WHERE proposal_id = $1 ORDER BY option_order
 
 ### Proposal Status Enum
 ```sql
-proposal_status AS ENUM ('draft', 'sent', 'selected', 'cancelled')
+proposal_status AS ENUM ('created', 'select', 'confirm', 'complete', 'cancelled')
 ```
 
 ---

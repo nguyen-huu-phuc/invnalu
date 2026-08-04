@@ -23,9 +23,10 @@ export interface AcceptPayload {
 interface AcceptQuoteButtonProps {
   payload: AcceptPayload
   accepted?: boolean
+  readOnly?: boolean
 }
 
-export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }: AcceptQuoteButtonProps) {
+export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, readOnly = false }: AcceptQuoteButtonProps) {
   const [accepting, setAccepting] = useState(false)
   const [accepted, setAccepted] = useState(initialAccepted)
   const [open, setOpen] = useState(false)
@@ -76,6 +77,28 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
     } finally {
       setAccepting(false)
     }
+  }
+
+  if (readOnly) {
+    return (
+      <div className="absolute top-4 right-4 z-10">
+        <Button
+          variant="fab"
+          size="icon"
+          className="h-14 w-14 rounded-full border-0 cursor-default"
+          aria-label="Đã chốt báo giá"
+        >
+          <CircleCheck
+            style={{
+              width: "30px",
+              height: "30px",
+              transform: "translateY(-8px)",
+              color: "#2563eb",
+            }}
+          />
+        </Button>
+      </div>
+    )
   }
 
   return (

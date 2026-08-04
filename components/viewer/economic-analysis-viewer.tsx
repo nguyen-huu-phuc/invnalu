@@ -80,8 +80,9 @@ interface EconomicAnalysisProps {
    electricityType?: "residential" | "business"
    businessSavedNormalMoney?: number
    businessSavedPeakMoney?: number
-   quoteId?: number
-   quoteSelected?: boolean
+    quoteId?: number
+    quoteSelected?: boolean
+    proposalStatus?: string
 }
 
 function formatWarranty(months?: number): string {
@@ -132,17 +133,18 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   inverterType,
   quoteData,
   electricityType,
-   businessSavedNormalMoney,
-   businessSavedPeakMoney,
-   quoteId,
-   quoteSelected,
-}, ref) => {
+     quoteId,
+     quoteSelected,
+     proposalStatus,
+  }, ref) => {
   const [mounted, setMounted] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   useImperativeHandle(ref, () => cardRef.current as HTMLDivElement)
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const isProposalLocked = proposalStatus === 'confirm' || proposalStatus === 'complete'
 
   const roundedCost = Math.ceil(totalCost / 100000) * 100000
   const roundedMonthlySavings = Math.ceil(monthlySavings / 1000) * 1000
@@ -158,16 +160,17 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   return (
     <div ref={cardRef} className="relative">
       <Card className="border-primary/20 shadow-sm" data-export="quote">
-       {quoteId && (
-         <AcceptQuoteButton
-           payload={{
-             quote_id: quoteId,
-             data: quoteData,
-             total_amount: quoteData?.total_price,
-           } as AcceptPayload}
-           accepted={quoteSelected}
-         />
-       )}
+       {quoteId && proposalStatus !== 'cancelled' && (!isProposalLocked || quoteSelected) && (
+          <AcceptQuoteButton
+            payload={{
+              quote_id: quoteId,
+              data: quoteData,
+              total_amount: quoteData?.total_price,
+            } as AcceptPayload}
+            accepted={quoteSelected}
+            readOnly={isProposalLocked}
+          />
+        )}
         <CardContent className="pt-0 space-y-3 sm:space-y-5">
             <div className="text-sm">
             <div className="flex items-center gap-2">

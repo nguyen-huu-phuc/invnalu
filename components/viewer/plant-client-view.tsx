@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { Loader2 } from "lucide-react"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { MobileIndicator } from '@/components/viewer/mobile-indicator'
+import { SwipeHint } from '@/components/viewer/swipe-hint'
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog, SolarAnalysisResult } from '@/lib/solar-calculator-logic'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Keyboard } from 'swiper/modules'
@@ -24,6 +25,7 @@ export interface PlantQuote {
   created_at: string
   proposal_title?: string
   proposal_share_slug?: string
+  proposal_status?: string
 }
 
 export interface PlantData {
@@ -128,8 +130,19 @@ function PlantTabsView({
     setActiveCalc(allCalcs[activeIndex])
   }, [allCalcs, activeIndex])
 
+  const [showHint, setShowHint] = useState(false)
+
+  useEffect(() => {
+    if (quotes.length > 1) {
+      setShowHint(true)
+      const timer = setTimeout(() => setShowHint(false), 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [quotes.length])
+
   return (
     <>
+      {showHint && <SwipeHint />}
       <MobileIndicator
         currentIndex={activeIndex}
         totalCount={quotes.length}
@@ -155,10 +168,14 @@ function PlantTabsView({
             if (!calc) return null
             return (
               <SwiperSlide key={q.id}>
-                 <EconomicAnalysis
-                    monthlyConsumption={calc.monthlyConsumption}
-                    quoteId={q.id}
-                    quoteSelected={q.is_selected}
+         {(() => {
+           const quoteAccepted = q.is_selected
+           return (
+             <EconomicAnalysis
+                monthlyConsumption={calc.monthlyConsumption}
+                quoteId={q.id}
+                quoteSelected={quoteAccepted}
+                proposalStatus={q.proposal_status}
                     monthlySavings={calc.monthlySavings}
                     yearlySavings={calc.yearlySavings}
                     totalCost={calc.totalCost}
@@ -207,9 +224,11 @@ function PlantTabsView({
                     }}
                     electricityType={calc.electricityType}
                     businessSavedNormalMoney={calc.businessSavedNormalMoney}
-                    businessSavedPeakMoney={calc.businessSavedPeakMoney}
-                  />
-                </SwiperSlide>
+                     businessSavedPeakMoney={calc.businessSavedPeakMoney}
+                   />
+                 )
+               })()}
+             </SwiperSlide>
             )
           })}
 

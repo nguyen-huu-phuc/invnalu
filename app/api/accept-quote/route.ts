@@ -23,25 +23,48 @@ export async function POST(request: Request) {
   try {
     await client.query('BEGIN')
 
+    const proposalCheck = await client.query(
+      `SELECT qp.status as proposal_status, q.proposal_id
+       FROM quotes q
+       JOIN quote_proposals qp ON q.proposal_id = qp.id
+       WHERE q.id = $1`,
+      [quote_id]
+    )
+
+    if (proposalCheck.rows.length === 0) {
+      await client.query('ROLLBACK')
+      return NextResponse.json({ error: 'Quote not found' }, { status: 404 })
+    }
+
+    const { proposal_status, proposal_id } = proposalCheck.rows[0]
+
+    if (proposal_status === 'cancelled' || proposal_status === 'confirm' || proposal_status === 'complete') {
+      await client.query('ROLLBACK')
+      return NextResponse.json(
+        { error: 'Đề xuất đã được khóa, không thể thay đổi lựa chọn' },
+        { status: 403 }
+      )
+    }
+
+    await client.query(
+      `UPDATE quotes SET is_selected = false, status = 'created'
+       WHERE proposal_id = $1 AND id != $2 AND is_selected = true`,
+      [proposal_id, quote_id]
+    )
+
     await client.query(
       'UPDATE quotes SET is_selected = true, status = $1 WHERE id = $2',
-      ['confirmed', quote_id]
+      ['select', quote_id]
     )
 
     await client.query(
-      "UPDATE quote_proposals SET status = 'selected' WHERE id = (SELECT proposal_id FROM quotes WHERE id = $1)",
-      [quote_id]
+      "UPDATE quote_proposals SET status = 'select' WHERE id = $1",
+      [proposal_id]
     )
-
-    const proposalResult = await client.query(
-      'SELECT proposal_id FROM quotes WHERE id = $1',
-      [quote_id]
-    )
-    const proposalId = proposalResult.rows[0]?.proposal_id
 
     const confirmation = await client.query(
       'INSERT INTO quote_confirmations (quote_id, proposal_id, total_amount, snapshot) VALUES ($1, $2, $3, $4) ON CONFLICT (quote_id) DO UPDATE SET total_amount = EXCLUDED.total_amount, snapshot = EXCLUDED.snapshot RETURNING *',
-      [quote_id, proposalId, total_amount || null, JSON.stringify(data)]
+      [quote_id, proposal_id, total_amount || null, JSON.stringify(data)]
     )
 
     await client.query('COMMIT')

@@ -34,6 +34,7 @@ export interface QuoteRaw {
   total_price: number | null
   system_power: number | null
   created_at: string
+  proposal_status?: string
   proposal?: {
     id: number
     share_slug: string

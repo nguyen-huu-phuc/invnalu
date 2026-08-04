@@ -114,7 +114,7 @@ export default async function QuoteSharePage({ params }: { params: Promise<{ slu
     notFound()
   }
 
-  const { quotes, products } = data
+  const { proposal, quotes, products } = data
 
   const normalizedQuotes: Quote[] = quotes.map(q => ({
     ...q,
@@ -136,11 +136,12 @@ export default async function QuoteSharePage({ params }: { params: Promise<{ slu
   return (
     <>
       <div className="container mx-auto px-0 py-0 sm:px-4 sm:py-6 max-w-5xl">
-        <QuoteClientView
-          quotes={normalizedQuotes}
-          catalog={catalog}
-          calcResult={calcResult}
-        />
+         <QuoteClientView
+           quotes={normalizedQuotes}
+           catalog={catalog}
+           calcResult={calcResult}
+           proposalStatus={proposal.status}
+         />
       </div>
     </>
   )

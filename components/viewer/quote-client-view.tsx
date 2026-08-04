@@ -48,10 +48,12 @@ export function QuoteClientView({
   quotes,
   catalog,
   calcResult,
+  proposalStatus,
 }: {
   quotes: Quote[]
   catalog: ProductCatalog
   calcResult: SolarAnalysisResult
+  proposalStatus?: string
 }) {
   const quote = quotes[0]
 
@@ -67,8 +69,9 @@ export function QuoteClientView({
             monthlyConsumption={calcResult.monthlyConsumption}
             quoteId={quote.id}
             quoteSelected={quote.is_selected}
-              monthlySavings={calcResult.monthlySavings}
-              yearlySavings={calcResult.yearlySavings}
+            monthlySavings={calcResult.monthlySavings}
+            yearlySavings={calcResult.yearlySavings}
+            proposalStatus={proposalStatus}
               totalCost={calcResult.totalCost}
               paybackYears={calcResult.paybackYears}
               hasStorage={calcResult.hasStorage}
