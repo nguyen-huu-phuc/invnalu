@@ -1,8 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { CircleCheck, Loader2 } from "lucide-react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -30,12 +29,20 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
   const [accepting, setAccepting] = useState(false)
   const [accepted, setAccepted] = useState(initialAccepted)
   const [open, setOpen] = useState(false)
+  const [showAck, setShowAck] = useState(false)
+  const ackTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (initialAccepted && !accepted) {
       setAccepted(true)
     }
   }, [initialAccepted, accepted])
+
+  const handleAck = () => {
+    setShowAck(true)
+    if (ackTimerRef.current) clearTimeout(ackTimerRef.current)
+    ackTimerRef.current = setTimeout(() => setShowAck(false), 1500)
+  }
 
   const handleAccept = async () => {
     if (accepted || !payload.quote_id) return
@@ -62,7 +69,7 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
       open={open}
       onOpenChange={(newOpen) => {
         if (accepted && newOpen) {
-          toast.success("Đã chốt báo giá rồi!")
+          handleAck()
           return
         }
         setOpen(newOpen)
@@ -97,9 +104,9 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Xác nhận chốt báo giá</DialogTitle>
+          <DialogTitle>Xác nhận chốt báo giá?</DialogTitle>
           <DialogDescription>
-            Nalu sẽ nhanh chóng liên hệ và phục vụ bạn.
+            Bạn muốn chốt báo giá này. Sau khi xác nhận, báo giá sẽ được ghi nhận và nhận được hỗ trợ từ đội ngũ chúng tôi.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -118,6 +125,18 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false }
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      {showAck && (
+        <span
+          className={cn(
+            "absolute top-full right-0 mt-1 px-2 py-1 text-xs font-medium text-background bg-muted-foreground/80 rounded shadow-lg whitespace-nowrap",
+            "pointer-events-none",
+          )}
+          style={{ zIndex: 1000 }}
+        >
+          Đã chốt rồi!
+        </span>
+      )}
     </Dialog>
   )
 }
