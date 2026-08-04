@@ -5,6 +5,8 @@ import { ShareViewLayout } from '@/components/layouts/share-view-layout'
 
 import { notFound } from 'next/navigation'
 
+export const revalidate = 300
+
 export async function generateMetadata({
   params,
 }: {

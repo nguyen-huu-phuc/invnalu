@@ -4,6 +4,8 @@ import { getQuoteProposalBySlug, getQuotesByProposalId, getProducts } from '@/li
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog } from '@/lib/solar-calculator-logic'
 import { QuoteClientView } from '@/components/viewer/quote-client-view'
 
+export const revalidate = 300
+
 export interface Quote {
   id: number
   proposal_id: number

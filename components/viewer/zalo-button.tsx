@@ -9,26 +9,17 @@ interface ZaloButtonProps {
 }
 
 export function ZaloButton({
-  href = "https://zalo.me/invnalu",
+  href = "https://zalo.me/0559310193",
   className,
 }: ZaloButtonProps) {
-  const [animate, setAnimate] = useState(false)
   const [paused, setPaused] = useState(false)
+  const [blueDoneCount, setBlueDoneCount] = useState(0)
 
-  const handleAnimationEnd = useCallback(() => {
-    setAnimate(false)
+  const handleBlueEnd = useCallback(() => {
+    setBlueDoneCount((prev) => prev + 1)
   }, [])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimate(true)
-    }, 6000)
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    if (!animate) return
-
     const onKeyDown = () => setPaused(true)
     const onKeyUp = () => setPaused(false)
     const onScroll = () => setPaused(true)
@@ -51,7 +42,7 @@ export function ZaloButton({
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchend", onTouchEnd)
     }
-  }, [animate])
+  }, [])
 
   return (
     <div
@@ -61,27 +52,32 @@ export function ZaloButton({
       )}
       style={{ bottom: "1rem", right: "1rem" }}
     >
-      {animate && !paused && (
-        <span
-          className="absolute top-1/2 left-1/2 w-14 h-14 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-blue-500 opacity-0 pointer-events-none"
-          onAnimationEnd={handleAnimationEnd}
-          style={{
-            animation: "zalo-ring 1.5s ease-out forwards",
-            animationDelay: "0s",
-          }}
-          aria-hidden="true"
-        />
-      )}
-      {animate && !paused && (
-        <span
-          className="absolute top-1/2 left-1/2 w-14 h-14 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-blue-400 opacity-0 pointer-events-none"
-          onAnimationEnd={handleAnimationEnd}
-          style={{
-            animation: "zalo-ring 1.5s ease-out forwards",
-            animationDelay: "0.3s",
-          }}
-          aria-hidden="true"
-        />
+      <span
+        className="absolute top-0 left-0 w-full h-full rounded-full border-2 border-green-500 opacity-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          animation: "zalo-ring-green 2s ease-in-out infinite",
+        }}
+      />
+      {blueDoneCount < 2 && (
+        <>
+          <span
+            className="absolute top-0 left-0 w-full h-full rounded-full border-2 border-blue-500 opacity-0 pointer-events-none"
+            onAnimationEnd={handleBlueEnd}
+            aria-hidden="true"
+            style={{
+              animation: "zalo-ring 1.5s ease-out forwards",
+            }}
+          />
+          <span
+            className="absolute top-0 left-0 w-full h-full rounded-full border-2 border-blue-500 opacity-0 pointer-events-none"
+            onAnimationEnd={handleBlueEnd}
+            aria-hidden="true"
+            style={{
+              animation: "zalo-ring 1.5s ease-out 0.75s forwards",
+            }}
+          />
+        </>
       )}
       <a
         href={href}
@@ -90,7 +86,7 @@ export function ZaloButton({
         aria-label="Liên hệ Zalo"
         className={cn(
           "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
-          animate && !paused && "zalo-bounce"
+          !paused && "zalo-bounce"
         )}
       >
         <img
@@ -104,11 +100,24 @@ export function ZaloButton({
       <style>{`
         @keyframes zalo-ring {
           0% {
-            transform: translate(-50%, -50%) scale(0.8);
+            transform: scale(0.8);
             opacity: 0.6;
           }
           100% {
-            transform: translate(-50%, -50%) scale(2.2);
+            transform: scale(2.2);
+            opacity: 0;
+          }
+        }
+        @keyframes zalo-ring-green {
+          0% {
+            transform: scale(0.7);
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 0.2;
+          }
+          100% {
+            transform: scale(1.2);
             opacity: 0;
           }
         }

@@ -5,6 +5,8 @@ import { decodeShareData } from "@/lib/share-encoding"
 import { getProducts } from "@/lib/db"
 import { ProductCatalog, calculateSolarAnalysis } from "@/lib/solar-calculator-logic"
 
+export const revalidate = 300
+
 export async function generateMetadata({
   searchParams,
 }: {
