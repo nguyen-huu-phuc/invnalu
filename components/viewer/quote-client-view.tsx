@@ -1,6 +1,5 @@
 "use client"
 
-import { Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog, SolarAnalysisResult } from '@/lib/solar-calculator-logic'
 
@@ -58,8 +57,6 @@ export function QuoteClientView({
 
   return (
     <>
-      <Toaster />
-
       {quotes.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           Chưa có báo giá nào cho địa điểm này.

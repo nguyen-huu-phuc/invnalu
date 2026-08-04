@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { Loader2 } from "lucide-react"
-import { Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { MobileIndicator } from '@/components/viewer/mobile-indicator'
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog, SolarAnalysisResult } from '@/lib/solar-calculator-logic'
@@ -85,8 +84,6 @@ export function PlantClientView({
 }) {
   return (
     <>
-      <Toaster />
-
       {quotes.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           Chưa có báo giá nào cho địa điểm này.

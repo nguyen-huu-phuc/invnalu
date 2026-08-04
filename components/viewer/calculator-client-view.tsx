@@ -1,6 +1,5 @@
 "use client"
 
-import { Toaster } from "sonner"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { SolarAnalysisResult } from "@/lib/solar-calculator-logic"
 
@@ -13,7 +12,6 @@ export function CalculatorClientView({
 }) {
   return (
     <div>
-      <Toaster />
       <EconomicAnalysis
             monthlyConsumption={calcResult.monthlyConsumption}
             monthlySavings={calcResult.monthlySavings}

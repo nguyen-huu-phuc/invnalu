@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { getPlantBySlug, getQuotesByPlantId, getProducts } from '@/lib/db'
 import { PlantClientView } from '@/components/viewer/plant-client-view'
 import { ShareViewLayout } from '@/components/layouts/share-view-layout'
-import { Toaster } from 'sonner'
+
 import { notFound } from 'next/navigation'
 
 export async function generateMetadata({
@@ -52,7 +52,6 @@ export default async function PlantSharePage({ params }: { params: Promise<{ slu
 
   return (
     <>
-      <Toaster />
       <ShareViewLayout>
         <PlantClientView
           plant={plant}
