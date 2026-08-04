@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 
 interface ZaloButtonProps {
@@ -12,42 +12,16 @@ export function ZaloButton({
   href = "https://zalo.me/0559310193",
   className,
 }: ZaloButtonProps) {
-  const [paused, setPaused] = useState(false)
   const [blueDoneCount, setBlueDoneCount] = useState(0)
 
   const handleBlueEnd = useCallback(() => {
     setBlueDoneCount((prev) => prev + 1)
   }, [])
 
-  useEffect(() => {
-    const onKeyDown = () => setPaused(true)
-    const onKeyUp = () => setPaused(false)
-    const onScroll = () => setPaused(true)
-    const onMouseMove = () => setPaused(false)
-    const onTouchStart = () => setPaused(true)
-    const onTouchEnd = () => setPaused(false)
-
-    window.addEventListener("keydown", onKeyDown)
-    window.addEventListener("keyup", onKeyUp)
-    window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("mousemove", onMouseMove, { passive: true })
-    window.addEventListener("touchstart", onTouchStart, { passive: true })
-    window.addEventListener("touchend", onTouchEnd, { passive: true })
-
-    return () => {
-      window.removeEventListener("keydown", onKeyDown)
-      window.removeEventListener("keyup", onKeyUp)
-      window.removeEventListener("scroll", onScroll)
-      window.removeEventListener("mousemove", onMouseMove)
-      window.removeEventListener("touchstart", onTouchStart)
-      window.removeEventListener("touchend", onTouchEnd)
-    }
-  }, [])
-
   return (
     <div
       className={cn(
-        "fixed z-50 flex flex-col items-center gap-2",
+        "fixed z-50 flex flex-col items-center gap-2 group",
         className
       )}
       style={{ bottom: "1rem", right: "1rem" }}
@@ -85,8 +59,7 @@ export function ZaloButton({
         rel="noopener noreferrer"
         aria-label="Liên hệ Zalo"
         className={cn(
-          "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
-          !paused && "zalo-bounce"
+          "relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 zalo-bounce group-hover:animate-none"
         )}
       >
         <img
@@ -97,7 +70,8 @@ export function ZaloButton({
           height={36}
         />
       </a>
-      <style>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes zalo-ring {
           0% {
             transform: scale(0.8);
@@ -128,7 +102,7 @@ export function ZaloButton({
           100% { transform: scale(1); }
         }
         .zalo-bounce {
-          animation: zalo-bounce 0.6s ease-in-out;
+          animation: zalo-bounce 0.6s ease-in-out infinite;
         }
         @media (prefers-reduced-motion: reduce) {
           .zalo-bounce,
@@ -136,7 +110,10 @@ export function ZaloButton({
             animation: none !important;
           }
         }
-      `}</style>
+      `
+      }} />
     </div>
   )
 }
+
+

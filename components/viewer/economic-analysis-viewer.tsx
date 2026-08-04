@@ -1,11 +1,18 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { Card, CardContent } from "@/components/ui/card"
 import { ExportImage } from "@/components/export-image"
-import { AcceptQuoteButton, type AcceptPayload } from "@/components/viewer/accept-quote-button"
+import type { AcceptPayload } from "@/components/viewer/accept-quote-button"
 import { TrendingUp, DollarSign, Clock, Cpu, Sun, Moon, Battery, Box, Zap, Activity, Server, SolarPanel, BatteryCharging, CircuitBoard, PiggyBank } from "lucide-react"
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react"
 import { formatVND } from "@/lib/utils"
+
+const AcceptQuoteButton = dynamic(
+  () => import("@/components/viewer/accept-quote-button").then((m) => m.AcceptQuoteButton),
+  { ssr: false }
+)
+
 
 interface EconomicAnalysisProps {
   monthlyConsumption: number

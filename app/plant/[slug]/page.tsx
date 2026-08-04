@@ -2,10 +2,20 @@ import type { Metadata } from "next"
 import { getPlantBySlug, getQuotesByPlantId, getProducts } from '@/lib/db'
 import { PlantClientView } from '@/components/viewer/plant-client-view'
 import { ShareViewLayout } from '@/components/layouts/share-view-layout'
-
+import { ProductCatalog } from '@/lib/solar-calculator-logic'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 300
+
+function parseQuoteData(data: any) {
+  if (typeof data !== 'string') return data || {}
+  try {
+    return JSON.parse(data)
+  } catch (err) {
+    console.error('Failed to parse quote data JSON in plant page:', err)
+    return {}
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -49,7 +59,7 @@ export default async function PlantSharePage({ params }: { params: Promise<{ slu
 
   const quotes = quotesRaw.map(q => ({
     ...q,
-    data: typeof q.data === 'string' ? JSON.parse(q.data) : q.data,
+    data: parseQuoteData(q.data),
   }))
 
   return (
@@ -65,3 +75,4 @@ export default async function PlantSharePage({ params }: { params: Promise<{ slu
     </>
   )
 }
+

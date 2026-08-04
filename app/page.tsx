@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import { CalculatorClientView } from "@/components/viewer/calculator-client-view"
 import { ShareViewLayout } from "@/components/layouts/share-view-layout"
 import { decodeShareData } from "@/lib/share-encoding"
@@ -83,12 +84,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ d
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      <img
+      <Image
         src="/slogan.webp"
         alt="Nalu Solar"
+        width={400}
+        height={200}
+        priority
         className="mx-auto max-w-full w-auto h-auto"
         style={{ maxWidth: '400px' }}
       />
     </div>
   )
 }
+

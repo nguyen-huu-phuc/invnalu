@@ -1,83 +1,33 @@
 import { Pool } from 'pg'
+import { SurveySettingsRaw, ItemInfoRaw, QuoteRaw, PlantRaw } from '@/types/solar'
 
-const pool = new Pool({
-  host: process.env.POSTGRES_HOST || 'localhost',
-  port: parseInt(process.env.POSTGRES_PORT || '5432'),
-  database: process.env.POSTGRES_DB || 'solar_calculator',
-  user: process.env.POSTGRES_USER || 'solar',
-  password: process.env.POSTGRES_PASSWORD || 'solar123',
-  // Read-only connection
-  max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-})
+export type { SurveySettingsRaw, ItemInfoRaw, QuoteRaw, PlantRaw }
+
+declare global {
+  // eslint-disable-next-line no-var
+  var pgPool: Pool | undefined
+}
+
+const pool =
+  globalThis.pgPool ||
+  new Pool({
+    host: process.env.POSTGRES_HOST || 'localhost',
+    port: parseInt(process.env.POSTGRES_PORT || '5432'),
+    database: process.env.POSTGRES_DB || 'solar_calculator',
+    user: process.env.POSTGRES_USER || 'solar',
+    password: process.env.POSTGRES_PASSWORD || 'solar123',
+    // Read-only connection
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+  })
+
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.pgPool = pool
+}
 
 export async function query(text: string, params?: any[]) {
   return pool.query(text, params)
-}
-
-export interface SurveySettingsRaw {
-  electricityType?: "residential" | "business"
-  inputType?: "bill" | "kwh"
-  billAmount?: number
-  kwhUsage?: number
-  daytimeUsage?: number
-  tilt?: number
-  azimuth?: number
-  storage?: string
-  phase?: string
-  inverterFactory?: string
-  latitude?: number
-  longitude?: number
-  businessNormalKwh?: number
-  businessPeakKwh?: number
-  businessOffpeakKwh?: number
-}
-
-export interface ItemInfoRaw {
-  product_type: string
-  sku: string | number
-  quantity: number
-}
-
-export interface QuoteRaw {
-  id: number
-  proposal_id: number
-  option_label: string
-  option_order: number
-  is_recommended: boolean
-  is_selected: boolean
-  status: string
-  data: any
-  total_price: number | null
-  system_power: number | null
-  created_at: string
-  proposal?: {
-    id: number
-    share_slug: string
-    title: string
-    status: string
-    plant_id: number | null
-    plant_name?: string
-    plant_address?: string
-    customer_name?: string
-    customer_phone?: string
-  }
-}
-
-export interface PlantRaw {
-  id: number
-  customer_id: number | null
-  name: string
-  address: string | null
-  location: string | null
-  contact_name: string | null
-  contact_phone: string | null
-  share_slug: string | null
-  expires_at: string | null
-  is_active: boolean
-  created_at: string
-  updated_at: string
 }
 
 export async function getQuoteProposalBySlug(slug: string) {
@@ -136,19 +86,46 @@ export async function refreshPlantShare(slug: string, expiresDays: number = 7) {
   return result.rows[0] || null
 }
 
+// In-memory cache for products catalog
+let productsCache: {
+  data: {
+    inverters: any[]
+    panels: any[]
+    batteries: any[]
+    components: any[]
+  }
+  timestamp: number
+} | null = null
+
+const PRODUCTS_CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
 export async function getProducts() {
+  const now = Date.now()
+  if (productsCache && now - productsCache.timestamp < PRODUCTS_CACHE_TTL) {
+    return productsCache.data
+  }
+
   const [inverters, panels, batteries, components] = await Promise.all([
     pool.query('SELECT * FROM inverters WHERE status = 1'),
     pool.query('SELECT * FROM panels WHERE status = 1 ORDER BY power_output DESC'),
     pool.query('SELECT * FROM batteries WHERE status = 1'),
     pool.query('SELECT * FROM components WHERE status = 1'),
   ])
-  return {
+
+  const catalog = {
     inverters: inverters.rows,
     panels: panels.rows,
     batteries: batteries.rows,
     components: components.rows,
   }
+
+  productsCache = {
+    data: catalog,
+    timestamp: now,
+  }
+
+  return catalog
 }
 
 export default pool
+

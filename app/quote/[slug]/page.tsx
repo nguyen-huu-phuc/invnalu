@@ -3,35 +3,20 @@ import { notFound } from 'next/navigation'
 import { getQuoteProposalBySlug, getQuotesByProposalId, getProducts } from '@/lib/db'
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog } from '@/lib/solar-calculator-logic'
 import { QuoteClientView } from '@/components/viewer/quote-client-view'
+import { Quote, ProposalData } from '@/types/solar'
 
 export const revalidate = 300
 
-export interface Quote {
-  id: number
-  proposal_id: number
-  option_label: string
-  option_order: number
-  is_recommended: boolean
-  is_selected: boolean
-  status: string
-  data: any
-  total_price: number | null
-  system_power: number | null
-  created_at: string
-}
+export type { Quote, ProposalData }
 
-export interface ProposalData {
-  id: number
-  share_slug: string
-  title: string
-  status: string
-  notes: string | null
-  plant_id: number | null
-  plant_name?: string
-  plant_address?: string
-  customer_name?: string
-  customer_phone?: string
-  customer_email?: string
+function parseQuoteData(data: any) {
+  if (typeof data !== 'string') return data || {}
+  try {
+    return JSON.parse(data)
+  } catch (err) {
+    console.error('Failed to parse quote data JSON:', err)
+    return {}
+  }
 }
 
 async function loadData(slug: string) {
@@ -95,7 +80,7 @@ export async function generateMetadata({
 
   const normalizedQuotes: Quote[] = quotes.map((q) => ({
     ...q,
-    data: typeof q.data === "string" ? JSON.parse(q.data) : q.data,
+    data: parseQuoteData(q.data),
   }))
 
   const catalog: ProductCatalog = {
@@ -133,7 +118,7 @@ export default async function QuoteSharePage({ params }: { params: Promise<{ slu
 
   const normalizedQuotes: Quote[] = quotes.map(q => ({
     ...q,
-    data: typeof q.data === 'string' ? JSON.parse(q.data) : q.data,
+    data: parseQuoteData(q.data),
   }))
 
   const catalog: ProductCatalog = {
@@ -160,3 +145,4 @@ export default async function QuoteSharePage({ params }: { params: Promise<{ slu
     </>
   )
 }
+
