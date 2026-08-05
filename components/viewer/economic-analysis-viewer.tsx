@@ -2,9 +2,8 @@
 
 import dynamic from "next/dynamic"
 import { Card, CardContent } from "@/components/ui/card"
-import { ExportImage } from "@/components/export-image"
 import type { AcceptPayload } from "@/components/viewer/accept-quote-button"
-import { TrendingUp, DollarSign, Clock, Cpu, Sun, Moon, Battery, Box, Zap, Activity, Server, SolarPanel, BatteryCharging, CircuitBoard, PiggyBank } from "lucide-react"
+import { TrendingUp, DollarSign, Clock, Cpu, Sun, Moon, Battery, Box, Zap, Activity, SolarPanel, BatteryCharging, CircuitBoard, PiggyBank } from "lucide-react"
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react"
 import { formatVND } from "@/lib/utils"
 
@@ -176,9 +175,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           />
         )}
         <CardContent className="pt-0 space-y-3">
-            <div className="flex items-center gap-2 justify-self-start">
-                <ExportImage trigger={<Server className="w-4 h-4 text-blue-500 shrink-0" />} />
-                 <span className="text-base sm:text-xl text-[#1F1F1F]">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp{hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)}kWh` : ''}</span>
+            <div className="flex items-center gap-2 justify-center">
+                <span className="text-base sm:text-xl text-[#1F1F1F]">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp{hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)}kWh` : ''}</span>
             </div>
 
         <div className="w-full rounded-xl border border-border/60 bg-muted/5 overflow-x-hidden">

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ZaloButton } from "@/components/viewer/zalo-button";
+import { ZaloButtonWrapper } from "@/components/viewer/zalo-button-wrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,7 +34,7 @@ export default function RootLayout({
     <html lang="vi" className={inter.variable}>
       <body className="font-sans antialiased">
         {children}
-        <ZaloButton />
+        <ZaloButtonWrapper />
       </body>
     </html>
   );
