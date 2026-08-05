@@ -158,8 +158,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   const getBarWidth = (val: number) => `${Math.min(100, val)}%`
 
   const prodLabel = "text-[#1E1E1E]"
-  const prodValue = "text-[#1E1E1E]"
-  const prodPercent = "text-[#1E1E1E] text-right"
+  const prodValue = "text-[#1E1E1E] justify-self-center"
+  const prodPercent = "text-[#1E1E1E] justify-self-end"
 
   return (
     <div ref={cardRef} className="relative">
@@ -176,7 +176,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           />
         )}
         <CardContent className="pt-0 space-y-3">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-self-start">
                 <ExportImage trigger={<Server className="w-4 h-4 text-blue-500 shrink-0" />} />
                  <span className="text-base sm:text-xl text-[#1F1F1F]">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp{hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)}kWh` : ''}</span>
             </div>
@@ -194,7 +194,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
               {inverterName && inverterCount && formatWarranty(inverterWarranty) ? (
                 <tr className="hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 justify-self-start">
                       <span className="text-[#1E1E1E] whitespace-normal">Biến tần {inverterName}</span>
                     </div>
                   </td>
@@ -205,7 +205,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
               {panelName && panelCount && formatWarranty(panelWarranty) ? (
                 <tr className="hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 justify-self-start">
                       <span className="text-[#1E1E1E] whitespace-normal">Tấm pin {panelName}</span>
                     </div>
                   </td>
@@ -216,7 +216,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
               {hasStorage && batteryName && batteryCount && formatWarranty(batteryWarranty) ? (
                 <tr className="hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 justify-self-start">
                       <span className="text-[#1E1E1E] whitespace-normal">Pin lưu trữ {batteryName}</span>
                     </div>
                   </td>
@@ -226,7 +226,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
               ) : null}
               <tr className="hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5">
-                   <div className="flex items-center gap-2">
+                   <div className="flex items-center gap-2 justify-self-start">
                        <span className="text-[#1E1E1E] whitespace-normal">Tủ, thiết bị bảo vệ khác</span>
                    </div>
                  </td>
@@ -239,13 +239,14 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
 
         {/* Sản lượng Section */}
         <div className="p-3 rounded-xl border border-border/60 bg-muted/10 space-y-3 text-sm">
+          <div className="w-full max-w-[500px] mx-auto space-y-3">
           <div className="flex items-center justify-center gap-2">
             <span className="text-[#1E1E1E] font-medium text-sm">Sản lượng trung bình</span>
             <span className="text-[#1E1E1E] font-medium text-sm">{monthlyProduction?.toFixed(0)} kWh/tháng</span>
           </div>
           <div className="space-y-1">
             <div className="grid grid-cols-3 items-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 justify-self-start">
                 <Sun className="w-4 h-4 text-muted-foreground" />
                 <span className={prodLabel}>
                   {electricityType === "business" ? "Bình thường" : "Ban ngày"}
@@ -258,7 +259,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {hasStorage && electricityType === "business" && (
             <div className="space-y-1">
               <div className="grid grid-cols-3 items-center">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-self-start">
                   <Battery className="w-4 h-4 text-muted-foreground" />
                   <span className={prodLabel}>Cao điểm</span>
                 </div>
@@ -270,7 +271,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {hasStorage && electricityType === "business" && (
             <div className="space-y-1">
               <div className="grid grid-cols-3 items-center">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-self-start">
                   <Battery className="w-4 h-4 text-muted-foreground" />
                     <span className={prodLabel}>Thấp điểm</span>
                 </div>
@@ -282,7 +283,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {hasStorage && electricityType === "business" && (
             <div className="space-y-1">
               <div className="grid grid-cols-3 items-center">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-self-start">
                   <BatteryCharging className="w-4 h-4 text-muted-foreground" />
                   <span className={prodLabel}>Sạc pin</span>
                 </div>
@@ -301,7 +302,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {hasStorage && electricityType === "residential" && (
             <div className="space-y-1">
               <div className="grid grid-cols-3 items-center">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-self-start">
                   <Moon className="w-4 h-4 text-muted-foreground" />
                   <span className={prodLabel}>Ban đêm</span>
                 </div>
@@ -313,7 +314,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {hasStorage && electricityType === "residential" && (
             <div className="space-y-1">
                <div className="grid grid-cols-3 items-center">
-                 <div className="flex items-center gap-2">
+                 <div className="flex items-center gap-2 justify-self-start">
                     <BatteryCharging className="w-4 h-4 text-muted-foreground" />
                    <span className={prodLabel}>Sạc pin</span>
                   </div>
@@ -326,7 +327,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <>
               <div className="space-y-1">
                 <div className="grid grid-cols-3 items-center">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 justify-self-start">
                     <Battery className="w-4 h-4 text-muted-foreground" />
                   <span className={prodLabel}>Thấp điểm</span>
                   </div>
@@ -336,7 +337,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
               </div>
               <div className="space-y-1">
                 <div className="grid grid-cols-3 items-center">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 justify-self-start">
                     <BatteryCharging className="w-4 h-4 text-muted-foreground" />
                   <span className={prodLabel}>Sạc pin</span>
                   </div>
@@ -346,6 +347,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
               </div>
             </>
           )}
+          </div>
         </div>
 
         {/* Key Metrics Grid */}

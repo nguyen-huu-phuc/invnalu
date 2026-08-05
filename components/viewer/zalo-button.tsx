@@ -27,7 +27,7 @@ export function ZaloButton({
       style={{ bottom: "1rem", right: "1rem" }}
     >
       <span
-        className="absolute top-0 left-0 w-full h-full rounded-full border-2 border-green-500 opacity-0 pointer-events-none"
+        className="absolute top-0 left-0 w-full h-full rounded-full border-2 border-blue-500 opacity-0 pointer-events-none"
         aria-hidden="true"
         style={{
           animation: "zalo-ring-green 2s ease-in-out infinite",
