@@ -8,7 +8,7 @@ import { TrendingUp, DollarSign, Clock, Cpu, Sun, Moon, Battery, Box, Zap, Activ
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react"
 import { formatVND } from "@/lib/utils"
 
-function formatVNDWithMutedCurrency(amount: number | null | undefined) {
+function formatVNDWithMutedCurrency(amount: number | null | undefined, currencyColor: string) {
   const formatted = formatVND(amount)
   if (formatted === "-") return <span className="text-muted-foreground">-</span>
   const parts = formatted.split(" ")
@@ -138,23 +138,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
      proposalStatus,
   }, ref) => {
   const [mounted, setMounted] = useState(false)
-  const [scale, setScale] = useState(1)
   const cardRef = useRef<HTMLDivElement>(null)
   useImperativeHandle(ref, () => cardRef.current as HTMLDivElement)
   useEffect(() => {
     setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    const updateScale = () => {
-      if (typeof window !== 'undefined') {
-        const width = window.innerWidth
-        setScale(width < 500 ? width / 500 : 1)
-      }
-    }
-    updateScale()
-    window.addEventListener('resize', updateScale)
-    return () => window.removeEventListener('resize', updateScale)
   }, [])
 
   const isProposalLocked = proposalStatus === 'confirm' || proposalStatus === 'complete'
@@ -171,18 +158,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   const getBarWidth = (val: number) => `${Math.min(100, val)}%`
 
   return (
-    <div style={{ width: '100%', overflow: 'hidden' }}>
-      <div
-        ref={cardRef}
-        className="relative"
-        style={{
-          width: scale < 1 ? '500px' : '100%',
-          transform: `scale(${scale})`,
-          transformOrigin: 'top left',
-          transition: 'transform 0.1s ease-out'
-        }}
-      >
-        <Card className="border-primary/20 shadow-sm" data-export="quote">
+    <div ref={cardRef} className="relative">
+      <Card className="border-primary/20 shadow-sm" data-export="quote">
        {quoteId && proposalStatus !== 'cancelled' && (!isProposalLocked || quoteSelected) && (
           <AcceptQuoteButton
             payload={{
@@ -194,19 +171,58 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             readOnly={isProposalLocked}
           />
         )}
-        <CardContent className="pt-0 space-y-3">
+        <CardContent className="pt-0 space-y-3 sm:space-y-5">
+            <div className="text-sm">
             <div className="flex items-center gap-2">
-                <ExportImage trigger={<Server className="w-4 h-4 text-blue-500 shrink-0" />} />
-                 <span className="text-lg text-foreground truncate">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp{hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)} kWh` : ''}</span>
+               <ExportImage trigger={<Server className="w-4 h-4 text-blue-500 shrink-0" />} />
+               <span className="sm:hidden text-sm text-foreground truncate">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} {quoteData?.system_power?.toFixed(1)} kWp{hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)} kWh` : ''}</span>
+                <span className="hidden sm:inline sm:truncate text-base sm:text-lg text-foreground">
+                Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp
+                {hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)} kWh` : ''}
+               </span>
+            </div>
             </div>
 
-        <div className="w-full rounded-xl border border-border/60">
-          <table className="w-full text-sm table-auto">
+        {/* Mobile Warranty List */}
+        <div className="block sm:hidden rounded-xl border border-border/60 bg-muted/10 divide-y divide-border/50">
+          {inverterName && inverterCount && formatWarranty(inverterWarranty) ? (
+            <div className="px-3 py-2">
+              <div className="flex items-center gap-2">
+                 <span className="text-sm text-foreground truncate">Biến tần {inverterName}</span>
+               </div>
+              <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: {inverterCount} · Bảo hành: {formatWarranty(inverterWarranty)}</span>
+            </div>
+          ) : null}
+          {panelName && panelCount && formatWarranty(panelWarranty) ? (
+            <div className="px-3 py-2">
+              <div className="flex items-center gap-2">
+                 <span className="text-sm text-foreground truncate">Tấm pin {panelName}</span>
+               </div>
+              <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: {panelCount} · Bảo hành: {formatWarranty(panelWarranty)}</span>
+            </div>
+          ) : null}
+          {hasStorage && batteryName && batteryCount && formatWarranty(batteryWarranty) ? (
+            <div className="px-3 py-2">
+              <div className="flex items-center gap-2">
+                 <span className="text-sm text-foreground truncate">Pin {batteryName}</span>
+               </div>
+              <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: {batteryCount} · Bảo hành: {formatWarranty(batteryWarranty)}</span>
+            </div>
+          ) : null}
+          <div className="px-3 py-2">
+              <div className="flex items-center gap-2">
+               <span className="text-sm text-foreground truncate">Tủ, thiết bị bảo vệ khác</span>
+             </div>
+            <span className="mt-0.5 block text-sm text-muted-foreground ml-[1.4rem]">Số lượng: 1 · Bảo hành: 1 năm</span>
+          </div>
+        </div>
+        <div className="hidden sm:block w-full overflow-hidden rounded-xl border border-border/60">
+          <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted/40 text-left">
-               <th className="px-3 py-2 text-foreground">Thiết bị</th>
-               <th className="px-3 py-2 text-foreground text-left">Số lượng</th>
-               <th className="px-3 py-2 text-foreground text-left">Bảo hành</th>
+                <th className="px-3 py-2 font-medium text-foreground">Thiết bị</th>
+                <th className="px-3 py-2 font-medium text-foreground text-left">Số lượng</th>
+                <th className="px-3 py-2 font-medium text-foreground text-left">Bảo hành</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60">
@@ -257,10 +273,10 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         </div>
 
         {/* Sản lượng Section */}
-        <div className="p-3 rounded-xl border border-border/60 bg-muted/10 space-y-3">
+        <div className="p-3 rounded-xl border border-border/60 bg-muted/10 space-y-3 text-sm">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-foreground text-sm">Sản lượng trung bình</span>
-            <span className="text-muted-foreground text-sm">{monthlyProduction?.toFixed(0)} kWh/tháng</span>
+            <span className="font-medium text-foreground text-sm">Sản lượng trung bình</span>
+            <span className="font-medium text-foreground text-sm">{monthlyProduction?.toFixed(0)} kWh/tháng</span>
           </div>
           <div className="space-y-1">
             <div className="grid grid-cols-3 items-center">
@@ -271,7 +287,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 </span>
               </div>
               <span className="text-muted-foreground">{dayProduced?.toFixed(1)} / {dayNeeded?.toFixed(1)} kWh</span>
-              <span className="text-muted-foreground text-right">{dayCoverage?.toFixed(0)}%</span>
+              <span className="font-medium text-muted-foreground text-right">{dayCoverage?.toFixed(0)}%</span>
             </div>
           </div>
           {hasStorage && electricityType === "business" && (
@@ -282,7 +298,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   <span className="text-muted-foreground">Cao điểm</span>
                 </div>
                 <span className="text-muted-foreground">{(chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) : 0)?.toFixed(1)} / {(peakNeeded || 0)?.toFixed(1)} kWh</span>
-                <span className="text-muted-foreground text-right">{peakCoverage?.toFixed(0)}%</span>
+                <span className="font-medium text-muted-foreground text-right">{peakCoverage?.toFixed(0)}%</span>
               </div>
             </div>
           )}
@@ -294,7 +310,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   <span className="text-muted-foreground">Thấp điểm</span>
                 </div>
                   <span className="text-muted-foreground">{Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)} / {(offpeakNeeded || 0)?.toFixed(1)} kWh</span>
-                <span className="text-muted-foreground text-right">{offpeakCoverage?.toFixed(0)}%</span>
+                <span className="font-medium text-muted-foreground text-right">{offpeakCoverage?.toFixed(0)}%</span>
               </div>
             </div>
           )}
@@ -309,7 +325,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   const needed = Math.min(batteryUsable || 0, (peakNeeded || 0) + (offpeakNeeded || 0)) / 0.9
                   return (chargeExcess || 0).toFixed(1) + " / " + needed.toFixed(1) + " kWh"
                 })()}</span>
-                <span className="text-muted-foreground text-right">{(() => {
+                <span className="font-medium text-muted-foreground text-right">{(() => {
                   const needed = Math.min(batteryUsable || 0, (peakNeeded || 0) + (offpeakNeeded || 0)) / 0.9
                   const coverage = needed > 0 ? (chargeExcess || 0) / needed * 100 : 0
                   return coverage.toFixed(0) + "%"
@@ -325,7 +341,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   <span className="text-muted-foreground">Ban đêm</span>
                 </div>
                 <span className="text-muted-foreground">{nightAvailable?.toFixed(1)} / {nightNeeded?.toFixed(1)} kWh</span>
-                <span className="text-muted-foreground text-right">{nightCoverage?.toFixed(0)}%</span>
+                <span className="font-medium text-muted-foreground text-right">{nightCoverage?.toFixed(0)}%</span>
               </div>
             </div>
           )}
@@ -337,7 +353,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                   <span className="text-muted-foreground">Sạc pin</span>
                 </div>
                   <span className="text-muted-foreground">{chargeExcess?.toFixed(1)} / {chargeNeeded?.toFixed(1)} kWh</span>
-                <span className="text-muted-foreground text-right">{chargeCoverage?.toFixed(0)}%</span>
+                <span className="font-medium text-muted-foreground text-right">{chargeCoverage?.toFixed(0)}%</span>
               </div>
             </div>
           )}
@@ -350,7 +366,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                     <span className="text-muted-foreground">Thấp điểm</span>
                   </div>
                 <span className="text-muted-foreground">{Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)} / {(offpeakNeeded || 0)?.toFixed(1)} kWh</span>
-                  <span className="text-muted-foreground text-right">{offpeakCoverage?.toFixed(0)}%</span>
+                  <span className="font-medium text-muted-foreground text-right">{offpeakCoverage?.toFixed(0)}%</span>
                 </div>
               </div>
               <div className="space-y-1">
@@ -360,7 +376,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                     <span className="text-muted-foreground">Sạc pin</span>
                   </div>
                 <span className="text-muted-foreground">{chargeExcess?.toFixed(1)} / {chargeNeeded?.toFixed(1)} kWh</span>
-                  <span className="text-muted-foreground text-right">{chargeCoverage?.toFixed(0)}%</span>
+                  <span className="font-medium text-muted-foreground text-right">{chargeCoverage?.toFixed(0)}%</span>
                 </div>
               </div>
             </>
@@ -370,42 +386,42 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-2 gap-3">
           {/* Chi phí lắp đặt */}
-          <div className="p-3 rounded-xl bg-muted/10 border border-amber-500/20">
-            <div className="flex items-center justify-center gap-1.5 mb-1.5">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-amber-500/20">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-muted-foreground">Chi phí lắp đặt</span>
             </div>
-            <p className="text-lg text-muted-foreground truncate text-center" suppressHydrationWarning>
-                {formatVNDWithMutedCurrency(roundedCost)}
+            <p className="text-lg sm:text-2xl text-muted-foreground truncate text-center" suppressHydrationWarning>
+                {formatVNDWithMutedCurrency(roundedCost, "text-amber-500")}
             </p>
           </div>
 
           {/* Tiết kiệm/tháng */}
-          <div className="p-3 rounded-xl bg-muted/10 border border-blue-500/20">
-            <div className="flex items-center justify-center gap-1.5 mb-1.5">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-blue-500/20">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-muted-foreground">Tiết kiệm/tháng</span>
             </div>
-            <p className="text-lg text-muted-foreground truncate text-center" suppressHydrationWarning>
-                {formatVNDWithMutedCurrency(roundedMonthlySavings)}
+            <p className="text-lg sm:text-2xl text-muted-foreground truncate text-center" suppressHydrationWarning>
+                {formatVNDWithMutedCurrency(roundedMonthlySavings, "text-blue-500")}
             </p>
           </div>
 
           {/* Hoàn vốn */}
-          <div className="p-3 rounded-xl bg-muted/10 border border-chart-3/30">
-            <div className="flex items-center justify-center gap-1.5 mb-1.5">
+          <div className="p-3 sm:p-4 rounded-lg bg-muted/10 border border-chart-3/30">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-muted-foreground">Hoàn vốn</span>
             </div>
-            <p className="text-lg text-muted-foreground text-center">
+            <p className="text-lg sm:text-2xl text-muted-foreground text-center">
                {paybackYears.toFixed(1)}               <span className="text-muted-foreground"> năm</span>
             </p>
           </div>
 
           {/* Tiết kiệm/năm */}
-          <div className="p-3 rounded-xl bg-muted/10 border border-primary/20">
-            <div className="flex items-center justify-center gap-1.5 mb-1.5">
+          <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-primary/20">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-muted-foreground">Tiết kiệm/năm</span>
             </div>
-            <p className="text-lg text-muted-foreground truncate text-center" suppressHydrationWarning>
-                {formatVNDWithMutedCurrency(roundedYearlySavings)}
+            <p className="text-lg sm:text-2xl text-muted-foreground truncate text-center" suppressHydrationWarning>
+                {formatVNDWithMutedCurrency(roundedYearlySavings, "text-green-600")}
             </p>
           </div>
         </div>
@@ -426,7 +442,6 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         </ul>
       </CardContent>
     </Card>
-    </div>
     </div>
   )
 })
