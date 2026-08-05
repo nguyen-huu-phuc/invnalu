@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     await client.query('BEGIN')
 
     const proposalCheck = await client.query(
-      `SELECT qp.status as proposal_status, q.proposal_id
+      `SELECT qp.status as proposal_status, q.proposal_id, qp.plant_id
        FROM quotes q
        JOIN quote_proposals qp ON q.proposal_id = qp.id
        WHERE q.id = $1`,
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Quote not found' }, { status: 404 })
     }
 
-    const { proposal_status, proposal_id } = proposalCheck.rows[0]
+    const { proposal_status, proposal_id, plant_id } = proposalCheck.rows[0]
 
     if (proposal_status === 'cancelled' || proposal_status === 'confirm' || proposal_status === 'complete') {
       await client.query('ROLLBACK')
@@ -46,11 +46,19 @@ export async function POST(request: Request) {
       )
     }
 
-    await client.query(
-      `UPDATE quotes SET is_selected = false, status = 'created'
-       WHERE proposal_id = $1 AND id != $2 AND is_selected = true`,
-      [proposal_id, quote_id]
+    const proposalsToReset = await client.query(
+      `SELECT id FROM quote_proposals WHERE plant_id = $1 AND id != $2`,
+      [plant_id, proposal_id]
     )
+
+    if (proposalsToReset.rows.length > 0) {
+      const proposalIds = proposalsToReset.rows.map(r => r.id)
+      await client.query(
+        `UPDATE quotes SET is_selected = false, status = 'created'
+         WHERE proposal_id = ANY($1::int[]) AND is_selected = true AND status = 'select'`,
+        [proposalIds]
+      )
+    }
 
     await client.query(
       'UPDATE quotes SET is_selected = true, status = $1 WHERE id = $2',

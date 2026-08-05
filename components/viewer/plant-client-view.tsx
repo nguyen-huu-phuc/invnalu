@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { Loader2 } from "lucide-react"
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { MobileIndicator } from '@/components/viewer/mobile-indicator'
@@ -110,6 +111,7 @@ function PlantTabsView({
   catalog: ProductCatalog
   isExpired: boolean
 }) {
+  const router = useRouter()
   const selectedIndex = quotes.findIndex((q) => q.is_selected)
   const [activeIndex, setActiveIndex] = useState(
     selectedIndex >= 0 ? selectedIndex : 0
@@ -140,6 +142,10 @@ function PlantTabsView({
     }
   }, [quotes.length])
 
+  const handleAcceptSuccess = useCallback(() => {
+    router.refresh()
+  }, [router])
+
   return (
     <>
       {showHint && <SwipeHint />}
@@ -166,16 +172,19 @@ function PlantTabsView({
           {quotes.map((q, i) => {
             const calc = allCalcs[i]
             if (!calc) return null
+            const quoteAccepted = q.is_selected
+            const selectedInPlant = quotes.find(qq => qq.is_selected)?.id ?? undefined
             return (
-              <SwiperSlide key={q.id}>
+              <SwiperSlide key={`${q.id}-${selectedInPlant}`}>
          {(() => {
-           const quoteAccepted = q.is_selected
            return (
-             <EconomicAnalysis
-                monthlyConsumption={calc.monthlyConsumption}
-                quoteId={q.id}
-                quoteSelected={quoteAccepted}
-                proposalStatus={q.proposal_status}
+              <EconomicAnalysis
+                 monthlyConsumption={calc.monthlyConsumption}
+                 quoteId={q.id}
+                 quoteSelected={quoteAccepted}
+                 proposalStatus={q.proposal_status}
+                  selectedQuoteId={selectedInPlant}
+                 onAcceptSuccess={handleAcceptSuccess}
                     monthlySavings={calc.monthlySavings}
                     yearlySavings={calc.yearlySavings}
                     totalCost={calc.totalCost}

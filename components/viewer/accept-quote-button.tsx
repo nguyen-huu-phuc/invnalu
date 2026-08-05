@@ -24,21 +24,22 @@ interface AcceptQuoteButtonProps {
   payload: AcceptPayload
   accepted?: boolean
   readOnly?: boolean
+  selectedQuoteId?: number
+  onAcceptSuccess?: () => void
 }
 
-export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, readOnly = false }: AcceptQuoteButtonProps) {
+export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, readOnly = false, selectedQuoteId, onAcceptSuccess }: AcceptQuoteButtonProps) {
   const [accepting, setAccepting] = useState(false)
   const [accepted, setAccepted] = useState(initialAccepted)
   const [open, setOpen] = useState(false)
   const [showAck, setShowAck] = useState(false)
   const ackTimerRef = useRef<NodeJS.Timeout | null>(null)
   const [blink, setBlink] = useState(false)
+  const [switchMode, setSwitchMode] = useState(false)
 
   useEffect(() => {
-    if (initialAccepted && !accepted) {
-      setAccepted(true)
-    }
-  }, [initialAccepted, accepted])
+    setAccepted(initialAccepted)
+  }, [initialAccepted])
 
   useEffect(() => {
     if (accepted) {
@@ -51,7 +52,7 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
       setTimeout(() => setBlink(false), 2000)
     }, 6000)
     return () => clearInterval(id)
-  }, [accepted])
+  }, [accepted, selectedQuoteId])
 
   const handleAck = () => {
     setShowAck(true)
@@ -60,7 +61,7 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
   }
 
   const handleAccept = async () => {
-    if (accepted || !payload.quote_id) return
+    if (!payload.quote_id) return
     setAccepting(true)
     try {
       const res = await fetch("/api/accept-quote", {
@@ -70,6 +71,7 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
       })
       if (res.ok) {
         setAccepted(true)
+        onAcceptSuccess?.()
       }
       setOpen(false)
     } catch {
@@ -81,18 +83,17 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
 
   if (readOnly) {
     return (
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute bottom-4 right-4 z-10">
         <Button
           variant="fab"
           size="icon"
-          className="h-14 w-14 rounded-full border-0 cursor-default"
+          className="h-16 w-16 rounded-full border-0 bg-transparent p-0 cursor-default"
           aria-label="Đã chốt báo giá"
         >
           <CircleCheck
+            size={48}
+            className="size-12"
             style={{
-              width: "30px",
-              height: "30px",
-              transform: "translateY(-8px)",
               color: "#2563eb",
             }}
           />
@@ -102,50 +103,94 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
   }
 
   return (
-    <div className="absolute top-4 right-4 z-10">
-      <Dialog
-        open={open}
-        onOpenChange={(newOpen) => {
-          if (accepted && newOpen) {
-            handleAck()
-            return
-          }
-          setOpen(newOpen)
-        }}
-      >
-        <DialogTrigger asChild>
+      <div className="absolute bottom-4 right-4 z-10">
+      <Dialog open={open} onOpenChange={setOpen}>
           <Button
             variant="fab"
             size="icon"
             className={cn(
-              "h-14 w-14 rounded-full border-0",
+              "h-16 w-16 rounded-full border-0 bg-transparent p-0",
               accepted && "cursor-default",
+              !accepted && "cursor-pointer",
             )}
-            onClick={undefined}
+            onClick={() => {
+              if (accepted) {
+                handleAck()
+                handleAccept()
+                return
+              }
+              if (selectedQuoteId && selectedQuoteId !== payload.quote_id) {
+                setSwitchMode(true)
+              } else {
+                setSwitchMode(false)
+              }
+              setOpen(true)
+            }}
             disabled={accepting}
             aria-label={accepted ? "Đã chốt báo giá" : "Chốt báo giá"}
           >
-             {accepting ? (
-               <Loader2 className="h-6 w-6 animate-spin" />
-             ) : blink ? (
-               <span className="text-sm text-muted-foreground" style={{ transform: "translateY(-8px)", display: "inline-block" }}>CHỐT</span>
-             ) : (
-               <CircleCheck
-                 style={{
-                   width: "30px",
-                   height: "30px",
-                   transform: "translateY(-8px)",
-                   color: accepted ? "#2563eb" : "#9ca3af",
-                 }}
-               />
-             )}
+            <span className="relative inline-flex items-center justify-center">
+              {accepting ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : accepted ? (
+                <CircleCheck
+                  size={48}
+                  className="size-12"
+                  style={{
+                    color: "#2563eb",
+                  }}
+                />
+              ) : selectedQuoteId != null && selectedQuoteId !== payload.quote_id ? (
+                <CircleCheck
+                  size={48}
+                  className="size-12"
+                  style={{
+                    color: "#9ca3af",
+                  }}
+                />
+              ) : selectedQuoteId != null && selectedQuoteId === payload.quote_id ? (
+                <CircleCheck
+                  size={48}
+                  className="size-12"
+                  style={{
+                    color: "#2563eb",
+                  }}
+                />
+              ) : (
+                <>
+                  <span
+                    className="absolute inline-flex h-12 w-12 rounded-full border-2 border-blue-600"
+                    style={{
+                      animation: 'ring-out 2.2s ease-out infinite',
+                      transformOrigin: 'center',
+                      willChange: 'transform, opacity, border-color',
+                    }}
+                  />
+                  <CircleCheck
+                    size={48}
+                    className="size-12 relative z-10"
+                    style={{
+                      color: "#2563eb",
+                      display: 'inline-block',
+                      animation: 'breath 2.2s ease-in-out infinite',
+                      transformOrigin: 'center',
+                      willChange: 'transform, opacity, filter',
+                    }}
+                  />
+                </>
+              )}
+              {blink && !accepted && !(selectedQuoteId && selectedQuoteId !== payload.quote_id) && (
+                <span className="absolute text-sm text-muted-foreground" style={{ transform: "translateY(-8px)", display: "inline-block" }}>CHỐT</span>
+              )}
+            </span>
           </Button>
-        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Xác nhận chốt báo giá?</DialogTitle>
+            <DialogTitle>
+              {switchMode ? "Đổi phương án" : "Xác nhận chốt báo giá?"}
+            </DialogTitle>
             <DialogDescription>
-              Nalu sẽ sớm liên hệ và phục vụ bạn!
+              {switchMode ? "Hệ thống sẽ chuyển sang phương án mới." : "Nalu sẽ sớm liên hệ và phục vụ bạn!"}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -160,7 +205,7 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
               onClick={handleAccept}
               disabled={accepting}
             >
-              {accepting ? "Đang gửi..." : "Xác nhận chốt"}
+              {accepting ? "Đang gửi..." : (switchMode ? "Xác nhận đổi" : "Xác nhận chốt")}
             </Button>
           </DialogFooter>
         </DialogContent>

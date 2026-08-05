@@ -7,7 +7,7 @@ export function SwipeHint() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 100)
+    const timer = setTimeout(() => setMounted(true), 200)
     return () => clearTimeout(timer)
   }, [])
 
@@ -18,7 +18,7 @@ export function SwipeHint() {
       <div className="fixed inset-0 z-[999999] flex items-center justify-center pointer-events-none select-none">
         <div className="flex items-center justify-center gap-10">
           <span className="text-gray-500 text-5xl animate-swipe-hint-left">&lt;&lt;</span>
-          <span className="text-gray-500 text-4xl font-semibold tracking-widest">VUỐT</span>
+          <span className="text-gray-500 text-4xl tracking-widest">VUỐT</span>
           <span className="text-gray-500 text-5xl animate-swipe-hint-right">&gt;&gt;</span>
         </div>
       </div>
@@ -30,7 +30,7 @@ export function SwipeHint() {
             opacity: 0.7;
           }
           100% {
-            transform: translateX(-200px) scale(1.4);
+            transform: translateX(-220px) scale(1.4);
             opacity: 0;
           }
         }
@@ -40,7 +40,7 @@ export function SwipeHint() {
             opacity: 0.7;
           }
           100% {
-            transform: translateX(200px) scale(1.4);
+            transform: translateX(220px) scale(1.4);
             opacity: 0;
           }
         }

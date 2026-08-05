@@ -79,10 +79,12 @@ interface EconomicAnalysisProps {
    electricityType?: "residential" | "business"
    businessSavedNormalMoney?: number
    businessSavedPeakMoney?: number
-    quoteId?: number
-    quoteSelected?: boolean
-    proposalStatus?: string
-}
+     quoteId?: number
+     quoteSelected?: boolean
+     proposalStatus?: string
+     selectedQuoteId?: number
+     onAcceptSuccess?: () => void
+   }
 
 function formatWarranty(months?: number): string {
   if (!months || months <= 0) return ""
@@ -132,10 +134,12 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   inverterType,
   quoteData,
   electricityType,
-     quoteId,
-     quoteSelected,
-     proposalStatus,
-  }, ref) => {
+      quoteId,
+      quoteSelected,
+      proposalStatus,
+      selectedQuoteId,
+      onAcceptSuccess,
+   }, ref) => {
   const [mounted, setMounted] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   useImperativeHandle(ref, () => cardRef.current as HTMLDivElement)
@@ -163,17 +167,6 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   return (
     <div ref={cardRef} className="relative">
       <Card className="border-primary/20 shadow-sm bg-muted/10" data-export="quote">
-       {quoteId && proposalStatus !== 'cancelled' && (!isProposalLocked || quoteSelected) && (
-          <AcceptQuoteButton
-            payload={{
-              quote_id: quoteId,
-              data: quoteData,
-              total_amount: quoteData?.total_price,
-            } as AcceptPayload}
-            accepted={quoteSelected}
-            readOnly={isProposalLocked}
-          />
-        )}
         <CardContent className="pt-0 space-y-3">
             <div className="flex items-center gap-2 justify-center">
                 <span className="text-base sm:text-xl text-[#1F1F1F]">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp{hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)}kWh` : ''}</span>
@@ -407,6 +400,19 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         </ul>
       </CardContent>
     </Card>
+    {quoteId && proposalStatus !== 'cancelled' && (!isProposalLocked || quoteSelected) && (
+      <AcceptQuoteButton
+        payload={{
+          quote_id: quoteId,
+          data: quoteData,
+          total_amount: quoteData?.total_price,
+        } as AcceptPayload}
+        accepted={quoteSelected}
+        readOnly={isProposalLocked}
+        selectedQuoteId={selectedQuoteId}
+        onAcceptSuccess={onAcceptSuccess}
+      />
+    )}
     </div>
   )
 })

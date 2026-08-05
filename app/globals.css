@@ -99,3 +99,34 @@
     @apply text-foreground;
   }
 }
+
+@keyframes breath {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0)); }
+  50% { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.7)); }
+}
+
+@keyframes ring-out {
+  0% { transform: scale(1); opacity: 0.8; border-color: rgba(37, 99, 235, 0.9); }
+  100% { transform: scale(2.2); opacity: 0; border-color: rgba(37, 99, 235, 0); }
+}
+
+@layer components {
+  .breath-icon {
+    animation: breath 2.2s ease-in-out infinite;
+    transform-origin: center;
+    will-change: transform, opacity, filter;
+  }
+  .ring-out {
+    animation: ring-out 2.2s ease-out infinite;
+    transform-origin: center;
+    will-change: transform, opacity, border-color;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .breath-icon {
+      animation: none !important;
+    }
+    .ring-out {
+      animation: none !important;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter, useCallback } from 'next/navigation'
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog, SolarAnalysisResult } from '@/lib/solar-calculator-logic'
 
@@ -55,7 +56,12 @@ export function QuoteClientView({
   calcResult: SolarAnalysisResult
   proposalStatus?: string
 }) {
+  const router = useRouter()
   const quote = quotes[0]
+  const selectedQuoteId = quote.is_selected ? quote.id : null
+  const handleAcceptSuccess = useCallback(() => {
+    router.refresh()
+  }, [router])
 
   return (
     <>
@@ -69,6 +75,8 @@ export function QuoteClientView({
             monthlyConsumption={calcResult.monthlyConsumption}
             quoteId={quote.id}
             quoteSelected={quote.is_selected}
+            selectedQuoteId={selectedQuoteId}
+            onAcceptSuccess={handleAcceptSuccess}
             monthlySavings={calcResult.monthlySavings}
             yearlySavings={calcResult.yearlySavings}
             proposalStatus={proposalStatus}
