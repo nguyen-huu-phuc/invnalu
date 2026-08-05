@@ -357,7 +357,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-[#1E1E1E]">Chi phí lắp đặt</span>
             </div>
-            <p className="text-lg sm:text-2xl text-[#1E1E1E] truncate text-center" suppressHydrationWarning>
+            <p className="text-base sm:text-xl text-[#1F1F1F] truncate text-center" suppressHydrationWarning>
                 {formatVNDWithMutedCurrency(roundedCost)}
             </p>
           </div>
@@ -367,7 +367,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-[#1E1E1E]">Tiết kiệm/tháng</span>
             </div>
-            <p className="text-lg sm:text-2xl text-[#1E1E1E] truncate text-center" suppressHydrationWarning>
+            <p className="text-base sm:text-xl text-[#1F1F1F] truncate text-center" suppressHydrationWarning>
                 {formatVNDWithMutedCurrency(roundedMonthlySavings)}
             </p>
           </div>
@@ -377,8 +377,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-[#1E1E1E]">Hoàn vốn</span>
             </div>
-            <p className="text-lg sm:text-2xl text-[#1E1E1E] text-center">
-               {paybackYears.toFixed(1)}               <span className="text-[#1E1E1E]"> năm</span>
+            <p className="text-base sm:text-xl text-[#1F1F1F] text-center">
+               {paybackYears.toFixed(1)}               <span className="text-[#1F1F1F]"> năm</span>
             </p>
           </div>
 
@@ -387,7 +387,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                <span className="text-sm text-[#1E1E1E]">Tiết kiệm/năm</span>
             </div>
-            <p className="text-lg sm:text-2xl text-[#1E1E1E] truncate text-center" suppressHydrationWarning>
+            <p className="text-base sm:text-xl text-[#1F1F1F] truncate text-center" suppressHydrationWarning>
                 {formatVNDWithMutedCurrency(roundedYearlySavings)}
             </p>
           </div>
