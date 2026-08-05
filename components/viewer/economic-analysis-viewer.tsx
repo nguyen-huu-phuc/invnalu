@@ -10,11 +10,11 @@ import { formatVND } from "@/lib/utils"
 
 function formatVNDWithMutedCurrency(amount: number | null | undefined, currencyColor: string) {
   const formatted = formatVND(amount)
-  if (formatted === "-") return <span className={currencyColor}>-</span>
+  if (formatted === "-") return <span className="text-muted-foreground">-</span>
   const parts = formatted.split(" ")
   return (
     <>
-      <span className={currencyColor}>{parts[0]}</span>
+      <span className="text-muted-foreground">{parts[0]}</span>
       <span className="text-muted-foreground"> {parts[1]}</span>
     </>
   )
@@ -273,103 +273,110 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         </div>
 
         {/* Sản lượng Section */}
-        <div className="p-3 rounded-xl border border-border/60 bg-muted/10 space-y-3">
+        <div className="p-3 rounded-xl border border-border/60 bg-muted/10 space-y-3 text-sm">
           <div className="flex items-center justify-center gap-2">
             <span className="font-medium text-foreground text-sm">Sản lượng trung bình</span>
             <span className="font-medium text-foreground text-sm">{monthlyProduction?.toFixed(0)} kWh/tháng</span>
           </div>
           <div className="space-y-1">
-            <div className="flex items-center justify-between text-xs">
+            <div className="grid grid-cols-3 items-center">
               <div className="flex items-center gap-2">
                 <Sun className="w-4 h-4 text-muted-foreground" />
                 <span className="text-muted-foreground">
-                  {electricityType === "business" ? "Bình thường" : "Ban ngày"} {dayProduced?.toFixed(1)}/{dayNeeded?.toFixed(1)}
+                  {electricityType === "business" ? "Bình thường" : "Ban ngày"}
                 </span>
               </div>
-              <span className="font-medium text-muted-foreground">{dayCoverage?.toFixed(0)}%</span>
+              <span className="text-muted-foreground">{dayProduced?.toFixed(1)} / {dayNeeded?.toFixed(1)} kWh</span>
+              <span className="font-medium text-muted-foreground text-right">{dayCoverage?.toFixed(0)}%</span>
             </div>
           </div>
           {hasStorage && electricityType === "business" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
+              <div className="grid grid-cols-3 items-center">
                 <div className="flex items-center gap-2">
                   <Battery className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Cao điểm {(chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) : 0)?.toFixed(1)}/{(peakNeeded || 0)?.toFixed(1)}</span>
+                  <span className="text-muted-foreground">Cao điểm</span>
                 </div>
-              <span className="font-medium text-muted-foreground">{peakCoverage?.toFixed(0)}%</span>
-            </div>
-          </div>
-        )}
-          {hasStorage && electricityType === "business" && (
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <Battery className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Thấp điểm {Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)}/{(offpeakNeeded || 0)?.toFixed(1)}</span>
-                  </div>
-                  <span className="font-medium text-muted-foreground">{offpeakCoverage?.toFixed(0)}%</span>
-                </div>
+                <span className="text-muted-foreground">{(chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) : 0)?.toFixed(1)} / {(peakNeeded || 0)?.toFixed(1)} kWh</span>
+                <span className="font-medium text-muted-foreground text-right">{peakCoverage?.toFixed(0)}%</span>
               </div>
+            </div>
           )}
           {hasStorage && electricityType === "business" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
+              <div className="grid grid-cols-3 items-center">
+                <div className="flex items-center gap-2">
+                  <Battery className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">Thấp điểm</span>
+                </div>
+                  <span className="text-muted-foreground">{Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)} / {(offpeakNeeded || 0)?.toFixed(1)} kWh</span>
+                <span className="font-medium text-muted-foreground text-right">{offpeakCoverage?.toFixed(0)}%</span>
+              </div>
+            </div>
+          )}
+          {hasStorage && electricityType === "business" && (
+            <div className="space-y-1">
+              <div className="grid grid-cols-3 items-center">
                 <div className="flex items-center gap-2">
                   <BatteryCharging className="w-4 h-4 text-muted-foreground" />
-                  {(() => {
-                    const needed = Math.min(batteryUsable || 0, (peakNeeded || 0) + (offpeakNeeded || 0)) / 0.9
-                    const coverage = needed > 0 ? (chargeExcess || 0) / needed * 100 : 0
-                    return <span className="text-muted-foreground">Sạc pin {(chargeExcess || 0).toFixed(1)}/{needed.toFixed(1)}</span>
-                  })()}
+                  <span className="text-muted-foreground">Sạc pin</span>
                 </div>
-                {(() => {
+                <span className="text-muted-foreground">{(() => {
+                  const needed = Math.min(batteryUsable || 0, (peakNeeded || 0) + (offpeakNeeded || 0)) / 0.9
+                  return (chargeExcess || 0).toFixed(1) + " / " + needed.toFixed(1) + " kWh"
+                })()}</span>
+                <span className="font-medium text-muted-foreground text-right">{(() => {
                   const needed = Math.min(batteryUsable || 0, (peakNeeded || 0) + (offpeakNeeded || 0)) / 0.9
                   const coverage = needed > 0 ? (chargeExcess || 0) / needed * 100 : 0
-                  return <span className="font-medium text-muted-foreground">{coverage.toFixed(0)}%</span>
-                })()}
+                  return coverage.toFixed(0) + "%"
+                })()}</span>
               </div>
             </div>
           )}
           {hasStorage && electricityType === "residential" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
+              <div className="grid grid-cols-3 items-center">
                 <div className="flex items-center gap-2">
                   <Moon className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Ban đêm {nightAvailable?.toFixed(1)}/{nightNeeded?.toFixed(1)}</span>
+                  <span className="text-muted-foreground">Ban đêm</span>
                 </div>
-                <span className="font-medium text-muted-foreground">{nightCoverage?.toFixed(0)}%</span>
+                <span className="text-muted-foreground">{nightAvailable?.toFixed(1)} / {nightNeeded?.toFixed(1)} kWh</span>
+                <span className="font-medium text-muted-foreground text-right">{nightCoverage?.toFixed(0)}%</span>
               </div>
             </div>
           )}
           {hasStorage && electricityType === "residential" && (
             <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
+              <div className="grid grid-cols-3 items-center">
                 <div className="flex items-center gap-2">
                   <BatteryCharging className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Sạc pin {chargeExcess?.toFixed(1)}/{chargeNeeded?.toFixed(1)}</span>
+                  <span className="text-muted-foreground">Sạc pin</span>
                 </div>
-                <span className="font-medium text-muted-foreground">{chargeCoverage?.toFixed(0)}%</span>
+                  <span className="text-muted-foreground">{chargeExcess?.toFixed(1)} / {chargeNeeded?.toFixed(1)} kWh</span>
+                <span className="font-medium text-muted-foreground text-right">{chargeCoverage?.toFixed(0)}%</span>
               </div>
             </div>
           )}
           {!hasStorage && electricityType === "business" && (
             <>
               <div className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
+                <div className="grid grid-cols-3 items-center">
                   <div className="flex items-center gap-2">
                     <Battery className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Thấp điểm {Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)}/{(offpeakNeeded || 0)?.toFixed(1)}</span>
+                    <span className="text-muted-foreground">Thấp điểm</span>
                   </div>
-                  <span className="font-medium text-muted-foreground">{offpeakCoverage?.toFixed(0)}%</span>
+                <span className="text-muted-foreground">{Math.max(0, (chargeExcess && batteryUsable ? Math.min(chargeExcess, batteryUsable) - (peakNeeded || 0) : 0))?.toFixed(1)} / {(offpeakNeeded || 0)?.toFixed(1)} kWh</span>
+                  <span className="font-medium text-muted-foreground text-right">{offpeakCoverage?.toFixed(0)}%</span>
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
+                <div className="grid grid-cols-3 items-center">
                   <div className="flex items-center gap-2">
                     <BatteryCharging className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Sạc pin {chargeExcess?.toFixed(1)}/{chargeNeeded?.toFixed(1)}</span>
+                    <span className="text-muted-foreground">Sạc pin</span>
                   </div>
-                  <span className="font-medium text-muted-foreground">{chargeCoverage?.toFixed(0)}%</span>
+                <span className="text-muted-foreground">{chargeExcess?.toFixed(1)} / {chargeNeeded?.toFixed(1)} kWh</span>
+                  <span className="font-medium text-muted-foreground text-right">{chargeCoverage?.toFixed(0)}%</span>
                 </div>
               </div>
             </>
@@ -381,10 +388,9 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {/* Chi phí lắp đặt */}
           <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-amber-500/20">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-               <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
                <span className="text-sm text-muted-foreground">Chi phí lắp đặt</span>
             </div>
-            <p className="text-lg sm:text-2xl text-amber-500 truncate text-center" suppressHydrationWarning>
+            <p className="text-lg sm:text-2xl text-muted-foreground truncate text-center" suppressHydrationWarning>
                 {formatVNDWithMutedCurrency(roundedCost, "text-amber-500")}
             </p>
           </div>
@@ -392,10 +398,9 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {/* Tiết kiệm/tháng */}
           <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-blue-500/20">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-              <PiggyBank className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" />
-              <span className="text-sm text-muted-foreground">Tiết kiệm/tháng</span>
+               <span className="text-sm text-muted-foreground">Tiết kiệm/tháng</span>
             </div>
-            <p className="text-lg sm:text-2xl text-blue-500 truncate text-center" suppressHydrationWarning>
+            <p className="text-lg sm:text-2xl text-muted-foreground truncate text-center" suppressHydrationWarning>
                 {formatVNDWithMutedCurrency(roundedMonthlySavings, "text-blue-500")}
             </p>
           </div>
@@ -403,10 +408,9 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {/* Hoàn vốn */}
           <div className="p-3 sm:p-4 rounded-lg bg-muted/10 border border-chart-3/30">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-chart-3" />
-              <span className="text-sm text-muted-foreground">Hoàn vốn</span>
+               <span className="text-sm text-muted-foreground">Hoàn vốn</span>
             </div>
-            <p className="text-lg sm:text-2xl text-chart-3 text-center">
+            <p className="text-lg sm:text-2xl text-muted-foreground text-center">
                {paybackYears.toFixed(1)}               <span className="text-muted-foreground"> năm</span>
             </p>
           </div>
@@ -414,10 +418,9 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           {/* Tiết kiệm/năm */}
           <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-primary/20">
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
-              <span className="text-sm text-muted-foreground">Tiết kiệm/năm</span>
+               <span className="text-sm text-muted-foreground">Tiết kiệm/năm</span>
             </div>
-            <p className="text-lg sm:text-2xl text-green-600 truncate text-center" suppressHydrationWarning>
+            <p className="text-lg sm:text-2xl text-muted-foreground truncate text-center" suppressHydrationWarning>
                 {formatVNDWithMutedCurrency(roundedYearlySavings, "text-green-600")}
             </p>
           </div>
