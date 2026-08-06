@@ -175,11 +175,13 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         <div className="w-full rounded-xl border border-border/80 bg-muted/5 overflow-x-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-muted/40 text-left">
-                <th className="px-3 py-2 font-medium text-[#1E1E1E]">Thiết bị</th>
-                <th className="py-2 font-medium text-[#1E1E1E] text-right">Số lượng</th>
-                <th className="px-3 py-2 font-medium text-[#1E1E1E] text-right">Bảo hành</th>
-              </tr>
+               <tr className="bg-muted/40 text-left">
+                 <th className="px-3 py-2 font-medium text-[#1E1E1E]">Thiết bị</th>
+                  <th className="py-2 font-medium text-[#1E1E1E] text-right sm:px-3">
+                    <span className="sm:hidden">SL</span><span className="hidden sm:inline">Số lượng</span>
+                  </th>
+                 <th className="py-2 font-medium text-[#1E1E1E] text-right px-3">Bảo hành</th>
+               </tr>
             </thead>
             <tbody className="divide-y divide-border/80">
               {inverterName && inverterCount && formatWarranty(inverterWarranty) ? (
@@ -189,8 +191,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                       <span className="text-[#1E1E1E] whitespace-normal">Biến tần {inverterName}</span>
                     </div>
                   </td>
-                    <td className="pl-3 pr-4 py-2.5 text-[#1E1E1E] text-right">{inverterCount}</td>
-                    <td className="px-3 py-2.5 text-[#1E1E1E] text-right">{formatWarranty(inverterWarranty)}</td>
+                    <td className="py-2.5 text-[#1E1E1E] text-right sm:pl-3 sm:pr-4">{inverterCount}</td>
+                    <td className="py-2.5 text-[#1E1E1E] text-right px-3">{formatWarranty(inverterWarranty)}</td>
                 </tr>
               ) : null}
               {panelName && panelCount && formatWarranty(panelWarranty) ? (
@@ -200,8 +202,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                       <span className="text-[#1E1E1E] whitespace-normal">Tấm pin {panelName}</span>
                     </div>
                   </td>
-                    <td className="pl-3 pr-4 py-2.5 text-[#1E1E1E] text-right">{panelCount}</td>
-                    <td className="px-3 py-2.5 text-[#1E1E1E] text-right">{formatWarranty(panelWarranty)}</td>
+                    <td className="py-2.5 text-[#1E1E1E] text-right sm:pl-3 sm:pr-4">{panelCount}</td>
+                    <td className="py-2.5 text-[#1E1E1E] text-right px-3">{formatWarranty(panelWarranty)}</td>
                 </tr>
               ) : null}
               {hasStorage && batteryName && batteryCount && formatWarranty(batteryWarranty) ? (
@@ -211,8 +213,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                       <span className="text-[#1E1E1E] whitespace-normal">Pin lưu trữ {batteryName}</span>
                     </div>
                   </td>
-                    <td className="pl-3 pr-4 py-2.5 text-[#1E1E1E] text-right">{batteryCount}</td>
-                    <td className="px-3 py-2.5 text-[#1E1E1E] text-right">{formatWarranty(batteryWarranty)}</td>
+                    <td className="py-2.5 text-[#1E1E1E] text-right sm:pl-3 sm:pr-4">{batteryCount}</td>
+                    <td className="py-2.5 text-[#1E1E1E] text-right px-3">{formatWarranty(batteryWarranty)}</td>
                 </tr>
               ) : null}
               <tr className="hover:bg-muted/20 transition-colors">
@@ -221,8 +223,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                        <span className="text-[#1E1E1E] whitespace-normal">Tủ, thiết bị bảo vệ khác</span>
                    </div>
                  </td>
-                     <td className="pl-3 pr-4 py-2.5 text-[#1E1E1E] text-right">1</td>
-                     <td className="px-3 py-2.5 text-[#1E1E1E] text-right">1 năm</td>
+                     <td className="py-2.5 text-[#1E1E1E] text-right sm:pl-3 sm:pr-4">1</td>
+                     <td className="py-2.5 text-[#1E1E1E] text-right px-3">1 năm</td>
               </tr>
             </tbody>
           </table>
