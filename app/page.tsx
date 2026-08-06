@@ -41,7 +41,7 @@ export async function generateMetadata({
     }
 
     return {
-      title,
+      title: "Nalu | Báo giá live",
       description: title,
       openGraph: { title, description: title, images: ["/nalu-logo-trans-512x234.png"] },
       twitter: { card: "summary_large_image", title, description: title, images: ["/nalu-logo-trans-512x234.png"] },

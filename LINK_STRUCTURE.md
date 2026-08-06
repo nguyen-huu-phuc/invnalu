@@ -6,13 +6,13 @@ Calnalu và inv.nalu.vn chia sẻ **cùng PostgreSQL** (`solar_calculator`). inv
 
 ---
 
-## 1. Share Link Format (Calculator State) — Compact Array
+## 1. Share Link Format (Calculator State) — Raw JSON
 
 Dùng để chia sẻ cấu hình calculator (survey + items). Format **mảng thứ tự**, cả 2 bên đồng ý trước.
 
 **Format:**
 ```
-https://inv.nalu.vn/?data={base64_encoded_array}
+https://inv.nalu.vn/?data=[[1,1,3000000,50,12,180,2,1,0,11.533486,106.891618,0,0,0],[[2,1],[40,13],[0,0]]]
 ```
 
 ### Payload Structure (Array)
@@ -22,13 +22,12 @@ https://inv.nalu.vn/?data={base64_encoded_array}
 
 ### Encoding
 ```js
-const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
-const url = `${INV_NALU_URL}/?data=${encodeURIComponent(encoded)}`
+const url = `${INV_NALU_URL}/?data=${JSON.stringify(payload)}`
 ```
 
 ### Decoding
 ```js
-const decoded = JSON.parse(decodeURIComponent(escape(atob(raw))))
+const decoded = JSON.parse(raw)
 // decoded = [[...survey], [...items]]
 ```
 
@@ -85,9 +84,9 @@ const decoded = JSON.parse(decodeURIComponent(escape(atob(raw))))
 [[1,1,1500000,50,30,180,1,1,1,11.533486,106.891618,0,0,0],[[1,1],[2,12],[3,1]]]
 ```
 
-Encoded:
+URL:
 ```
-https://inv.nalu.vn/?data=WJNMT2sxNTAwMDAwNTAzMDE4MDEwMQ...
+https://inv.nalu.vn/?data=[[1,1,1500000,50,30,180,1,1,1,11.533486,106.891618,0,0,0],[[1,1],[2,12],[3,1]]]
 ```
 
 ---

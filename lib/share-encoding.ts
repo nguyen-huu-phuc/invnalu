@@ -82,11 +82,11 @@ export function encodeShareData(
   ]
 
   const payload = [surveyArr, itemsArr] as [SurveyArray, ItemsArray]
-  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+  return JSON.stringify(payload)
 }
 
 export function decodeShareData(raw: string): { survey: SurveySettings; items: ItemInfo[] } {
-  const decoded = JSON.parse(decodeURIComponent(escape(atob(raw))))
+  const decoded = JSON.parse(raw)
 
   if (Array.isArray(decoded)) {
     const [surveyArr, itemsArr] = decoded as [SurveyArray, ItemsArray]
