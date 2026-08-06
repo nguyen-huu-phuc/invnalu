@@ -34,25 +34,11 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
   const [open, setOpen] = useState(false)
   const [showAck, setShowAck] = useState(false)
   const ackTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const [blink, setBlink] = useState(false)
   const [switchMode, setSwitchMode] = useState(false)
 
   useEffect(() => {
     setAccepted(initialAccepted)
   }, [initialAccepted])
-
-  useEffect(() => {
-    if (accepted) {
-      setBlink(false)
-      return
-    }
-    setBlink(false)
-    const id = setInterval(() => {
-      setBlink(true)
-      setTimeout(() => setBlink(false), 2000)
-    }, 6000)
-    return () => clearInterval(id)
-  }, [accepted, selectedQuoteId])
 
   const handleAck = () => {
     setShowAck(true)
@@ -157,30 +143,17 @@ export function AcceptQuoteButton({ payload, accepted: initialAccepted = false, 
                   }}
                 />
               ) : (
-                <>
-                  <span
-                    className="absolute inline-flex h-12 w-12 rounded-full border-2 border-blue-600"
-                    style={{
-                      animation: 'ring-out 2.2s ease-out infinite',
-                      transformOrigin: 'center',
-                      willChange: 'transform, opacity, border-color',
-                    }}
-                  />
-                  <CircleCheck
-                    size={48}
-                    className="size-12 relative z-10"
-                    style={{
-                      color: "#2563eb",
-                      display: 'inline-block',
-                      animation: 'breath 2.2s ease-in-out infinite',
-                      transformOrigin: 'center',
-                      willChange: 'transform, opacity, filter',
-                    }}
-                  />
-                </>
-              )}
-              {blink && !accepted && !(selectedQuoteId && selectedQuoteId !== payload.quote_id) && (
-                <span className="absolute text-sm text-muted-foreground" style={{ transform: "translateY(-8px)", display: "inline-block" }}>CHỐT</span>
+                <CircleCheck
+                  size={48}
+                  className="size-12 relative z-10"
+                  style={{
+                    color: "#2563eb",
+                    display: 'inline-block',
+                    animation: 'breath 2.2s ease-in-out infinite',
+                    transformOrigin: 'center',
+                    willChange: 'transform, opacity, filter',
+                  }}
+                />
               )}
             </span>
           </Button>

@@ -9,7 +9,7 @@ interface ZaloButtonProps {
 }
 
 export function ZaloButton({
-  href = "https://zalo.me/0559310193",
+  href = "https://zalo.me/w/0559310193",
   className,
 }: ZaloButtonProps) {
   const [blueDoneCount, setBlueDoneCount] = useState(0)
