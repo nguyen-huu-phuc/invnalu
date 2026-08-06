@@ -83,6 +83,7 @@ export function QuoteClientView({
               totalCost={calcResult.totalCost}
               paybackYears={calcResult.paybackYears}
               hasStorage={calcResult.hasStorage}
+              storageStatus={calcResult.storageStatus}
               monthlyProduction={calcResult.monthlyProduction}
               dayCoverage={calcResult.dayCoverage}
               nightCoverage={calcResult.nightCoverage}

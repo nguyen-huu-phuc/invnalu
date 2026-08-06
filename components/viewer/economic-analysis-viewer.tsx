@@ -32,6 +32,7 @@ interface EconomicAnalysisProps {
   totalCost: number
   paybackYears: number
   hasStorage: boolean
+  storageStatus?: "yes" | "no" | "pending"
   monthlyProduction?: number
   dayCoverage?: number
   nightCoverage?: number
@@ -102,6 +103,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   totalCost,
   paybackYears,
   hasStorage,
+  storageStatus,
   monthlyProduction,
   dayCoverage,
   nightCoverage,
@@ -168,8 +170,15 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
     <div ref={cardRef} className="relative">
       <Card className="border-border/80 shadow-sm bg-muted/10" data-export="quote">
         <CardContent className="pt-0 space-y-3">
-            <div className="flex items-center gap-2 justify-center">
-                <span className="font-medium text-base sm:text-xl text-[#1F1F1F]">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp{hasStorage && quoteData?.battery_capacity ? `, lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)}kWh` : ''}</span>
+            <div className="flex flex-col items-center gap-1 text-center sm:flex-row sm:items-center sm:gap-2">
+                <span className="font-medium text-base sm:text-xl text-[#1F1F1F]">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp</span>
+                {inverterType === 'hybrid' && storageStatus && (
+                  <span className="font-medium text-base sm:text-xl text-[#1E1E1E]">
+                    {storageStatus === 'yes' && quoteData?.battery_capacity ? ` lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)}kWh` : ''}
+                    {storageStatus === 'pending' && ' (lắp pin sau)'}
+                    {storageStatus === 'no' && ' (không lắp pin)'}
+                  </span>
+                )}
             </div>
 
         <div className="w-full rounded-xl border border-border/80 bg-muted/5 overflow-x-hidden">

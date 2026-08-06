@@ -104,6 +104,7 @@ export interface SolarAnalysisResult {
   totalCost: number
   paybackYears: number
   hasStorage: boolean
+  storageStatus: "yes" | "no" | "pending"
   monthlyProduction: number
   dayCoverage: number
   nightCoverage: number
@@ -368,6 +369,7 @@ export function calculateSolarAnalysis(params: {
     totalCost,
     paybackYears,
     hasStorage,
+    storageStatus: storageOption,
     monthlyProduction,
     dayCoverage: displayDayCoverage,
     nightCoverage: displayNightCoverage,

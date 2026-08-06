@@ -18,8 +18,9 @@ export function CalculatorClientView({
             yearlySavings={calcResult.yearlySavings}
             totalCost={calcResult.totalCost}
             paybackYears={calcResult.paybackYears}
-            hasStorage={calcResult.hasStorage}
-            monthlyProduction={calcResult.monthlyProduction}
+             hasStorage={calcResult.hasStorage}
+             storageStatus={calcResult.storageStatus}
+             monthlyProduction={calcResult.monthlyProduction}
             dayCoverage={calcResult.dayCoverage}
             nightCoverage={calcResult.nightCoverage}
             chargeCoverage={calcResult.chargeCoverage}

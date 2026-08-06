@@ -189,8 +189,9 @@ function PlantTabsView({
                     yearlySavings={calc.yearlySavings}
                     totalCost={calc.totalCost}
                     paybackYears={calc.paybackYears}
-                    hasStorage={calc.hasStorage}
-                    monthlyProduction={calc.monthlyProduction}
+                     hasStorage={calc.hasStorage}
+                     storageStatus={calc.storageStatus}
+                     monthlyProduction={calc.monthlyProduction}
                     dayCoverage={calc.dayCoverage}
                     nightCoverage={calc.nightCoverage}
                     chargeCoverage={calc.chargeCoverage}
