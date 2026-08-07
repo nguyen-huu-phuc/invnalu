@@ -352,48 +352,48 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
           </div>
         </div>
 
-         {/* Key Metrics Grid */}
-         <div className="grid grid-cols-2 gap-3">
-           {/* Chi phí lắp đặt */}
-           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-amber-500/40">
-             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                <span className="text-sm text-foreground">Chi phí lắp đặt</span>
-             </div>
-             <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
-                 {formatVNDWithMutedCurrency(roundedCost)}
-             </p>
-           </div>
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Tiết kiệm/tháng */}
+            <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-blue-500/40">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                 <span className="text-sm text-foreground">Tiết kiệm/tháng</span>
+              </div>
+              <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
+                  {formatVNDWithMutedCurrency(roundedMonthlySavings)}
+              </p>
+            </div>
 
-           {/* Hoàn vốn */}
-           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-green-500/40">
-             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                <span className="text-sm text-foreground">Hoàn vốn</span>
-             </div>
-             <p className="text-base sm:text-xl text-foreground/90 font-medium text-center">
-                {paybackYears.toFixed(1)}               <span className="text-foreground/90"> năm</span>
-             </p>
-           </div>
+            {/* Tiết kiệm/năm */}
+            <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-blue-500/40">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                 <span className="text-sm text-foreground">Tiết kiệm/năm</span>
+              </div>
+              <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
+                  {formatVNDWithMutedCurrency(roundedYearlySavings)}
+              </p>
+            </div>
 
-           {/* Tiết kiệm/tháng */}
-           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-blue-500/40">
-             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                <span className="text-sm text-foreground">Tiết kiệm/tháng</span>
-             </div>
-             <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
-                 {formatVNDWithMutedCurrency(roundedMonthlySavings)}
-             </p>
-           </div>
+            {/* Hoàn vốn */}
+            <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-green-500/40">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                 <span className="text-sm text-foreground">Hoàn vốn</span>
+              </div>
+              <p className="text-base sm:text-xl text-foreground/90 font-medium text-center">
+                 {paybackYears.toFixed(1)}               <span className="text-foreground/90"> năm</span>
+              </p>
+            </div>
 
-           {/* Tiết kiệm/năm */}
-           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-blue-500/40">
-             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                <span className="text-sm text-foreground">Tiết kiệm/năm</span>
-             </div>
-             <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
-                 {formatVNDWithMutedCurrency(roundedYearlySavings)}
-             </p>
-           </div>
-         </div>
+            {/* Chi phí lắp đặt */}
+            <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-amber-500/40">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                 <span className="text-sm text-foreground">Chi phí lắp đặt</span>
+              </div>
+              <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
+                   {formatVNDWithMutedCurrency(roundedCost)}
+              </p>
+            </div>
+          </div>
 
          <ul className="list-disc space-y-1 pl-4 text-xs text-foreground">
            <li>
