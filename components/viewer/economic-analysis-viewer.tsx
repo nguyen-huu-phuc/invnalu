@@ -168,12 +168,12 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
 
   return (
     <div ref={cardRef} className="relative">
-      <Card className="border-border/80 shadow-sm bg-muted/10" data-export="quote">
+      <Card className="border-border/80 shadow-sm bg-card" data-export="quote">
         <CardContent className="pt-0 space-y-3">
             <div className="flex flex-col items-center gap-1 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-2">
-                <span className="font-medium text-base sm:text-xl text-foreground">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp</span>
+                <span className="font-medium text-base sm:text-xl text-foreground/90">Hệ thống {inverterType === 'hybrid' ? 'hybrid' : 'ongrid'} công suất {quoteData?.system_power?.toFixed(1)} kWp</span>
                 {inverterType === 'hybrid' && storageStatus && (
-                  <span className="font-medium text-base sm:text-xl text-foreground">
+                  <span className="font-medium text-base sm:text-xl text-foreground/90">
                     {storageStatus === 'yes' && quoteData?.battery_capacity ? ` lưu trữ ${Number(quoteData.battery_capacity).toFixed(1)}kWh` : ''}
                     {storageStatus === 'pending' && ' (lắp pin sau)'}
                     {storageStatus === 'no' && ' (không lắp pin)'}
@@ -181,15 +181,15 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 )}
             </div>
 
-        <div className="w-full rounded-xl border border-border/80 bg-muted/5 overflow-x-hidden">
+        <div className="w-full rounded-xl border border-border/80 bg-card2 overflow-x-hidden">
           <table className="w-full text-sm">
             <thead>
-               <tr className="bg-muted/40 text-left">
-                 <th className="px-3 py-2 font-medium text-foreground">Thiết bị</th>
-                  <th className="py-2 font-medium text-foreground text-right">
-                    <span className="sm:hidden">SL</span><span className="hidden sm:inline">Số lượng</span>
-                  </th>
-                 <th className="py-2 font-medium text-foreground text-right px-3">Bảo hành</th>
+               <tr className="bg-muted text-left border-b border-border">
+<th className="px-3 py-2 font-medium text-foreground">Thiết bị</th>
+                <th className="py-2 font-medium text-foreground text-right">
+                  <span className="sm:hidden">SL</span><span className="hidden sm:inline">Số lượng</span>
+                </th>
+                <th className="py-2 font-medium text-foreground text-right px-3">Bảo hành</th>
                </tr>
             </thead>
             <tbody className="divide-y divide-border/80">
@@ -200,7 +200,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                       <span className="text-foreground whitespace-normal">Biến tần {inverterName}</span>
                     </div>
                   </td>
-                    <td className="py-2.5 text-foreground text-right sm:px-3">{inverterCount}</td>
+                    <td className="py-2.5 text-foreground text-right sm:pl-3 sm:pr-4">{inverterCount}</td>
                     <td className="py-2.5 text-foreground text-right px-3">{formatWarranty(inverterWarranty)}</td>
                 </tr>
               ) : null}
@@ -211,7 +211,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                       <span className="text-foreground whitespace-normal">Tấm pin {panelName}</span>
                     </div>
                   </td>
-                    <td className="py-2.5 text-foreground text-right sm:px-3">{panelCount}</td>
+                    <td className="py-2.5 text-foreground text-right sm:pl-3 sm:pr-4">{panelCount}</td>
                     <td className="py-2.5 text-foreground text-right px-3">{formatWarranty(panelWarranty)}</td>
                 </tr>
               ) : null}
@@ -222,7 +222,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                       <span className="text-foreground whitespace-normal">Pin lưu trữ {batteryName}</span>
                     </div>
                   </td>
-                    <td className="py-2.5 text-foreground text-right sm:px-3">{batteryCount}</td>
+                    <td className="py-2.5 text-foreground text-right sm:pl-3 sm:pr-4">{batteryCount}</td>
                     <td className="py-2.5 text-foreground text-right px-3">{formatWarranty(batteryWarranty)}</td>
                 </tr>
               ) : null}
@@ -232,7 +232,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                        <span className="text-foreground whitespace-normal">Tủ, thiết bị bảo vệ khác</span>
                    </div>
                  </td>
-                     <td className="py-2.5 text-foreground text-right sm:px-3">1</td>
+                     <td className="py-2.5 text-foreground text-right sm:pl-3 sm:pr-4">1</td>
                      <td className="py-2.5 text-foreground text-right px-3">1 năm</td>
               </tr>
             </tbody>
@@ -240,7 +240,7 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
         </div>
 
         {/* Sản lượng Section */}
-        <div className="p-3 rounded-xl border border-border/80 bg-muted/10 space-y-3 text-sm">
+        <div className="p-3 rounded-xl border border-border/80 bg-card2 space-y-3 text-sm">
           <div className="w-full max-w-[500px] mx-auto space-y-3">
           <div className="flex items-center justify-center gap-2">
             <span className="text-foreground font-medium text-sm">Sản lượng trung bình</span>
@@ -355,57 +355,57 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
          {/* Key Metrics Grid */}
          <div className="grid grid-cols-2 gap-3">
            {/* Chi phí lắp đặt */}
-           <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-amber-500/40">
+           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-amber-500/40">
              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                 <span className="text-sm text-foreground">Chi phí lắp đặt</span>
              </div>
-             <p className="text-base sm:text-xl text-foreground font-medium truncate text-center" suppressHydrationWarning>
+             <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
                  {formatVNDWithMutedCurrency(roundedCost)}
              </p>
            </div>
 
            {/* Hoàn vốn */}
-           <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-chart-3/50">
+           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-green-500/40">
              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                 <span className="text-sm text-foreground">Hoàn vốn</span>
              </div>
-             <p className="text-base sm:text-xl text-foreground font-medium text-center">
-                {paybackYears.toFixed(1)}               <span className="text-foreground"> năm</span>
+             <p className="text-base sm:text-xl text-foreground/90 font-medium text-center">
+                {paybackYears.toFixed(1)}               <span className="text-foreground/90"> năm</span>
              </p>
            </div>
 
            {/* Tiết kiệm/tháng */}
-           <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-blue-500/40">
+           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-blue-500/40">
              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                 <span className="text-sm text-foreground">Tiết kiệm/tháng</span>
              </div>
-             <p className="text-base sm:text-xl text-foreground font-medium truncate text-center" suppressHydrationWarning>
+             <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
                  {formatVNDWithMutedCurrency(roundedMonthlySavings)}
              </p>
            </div>
 
            {/* Tiết kiệm/năm */}
-           <div className="p-3 sm:p-4 rounded-xl bg-muted/10 border border-primary/40">
+           <div className="p-3 sm:p-4 rounded-xl bg-card2 border border-blue-500/40">
              <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                 <span className="text-sm text-foreground">Tiết kiệm/năm</span>
              </div>
-             <p className="text-base sm:text-xl text-foreground font-medium truncate text-center" suppressHydrationWarning>
+             <p className="text-base sm:text-xl text-foreground/90 font-medium truncate text-center" suppressHydrationWarning>
                  {formatVNDWithMutedCurrency(roundedYearlySavings)}
              </p>
            </div>
          </div>
 
-        <ul className="list-disc space-y-1 pl-4 text-xs text-foreground">
-          <li>
-            Tính cho tải sử dụng{" "}
-             {formatVND(quoteData?.monthly_electricity_cost)}/tháng
-            {" "}(~ {mounted ? quoteData?.monthly_electricity_kwh.toLocaleString("vi-VN") : quoteData?.monthly_electricity_kwh} kWh),{" "}
-            điện {electricityType === "business" ? "kinh doanh" : "sinh hoạt"}{" "}
-            {quoteData?.phase_type === '3 phase' ? '3 pha' : '1 pha'}
-            {electricityType === "business"
-              ? `, BT: ${(businessNormalKwh || 0).toFixed(0)}, CD: ${(businessPeakKwh || 0).toFixed(0)}, TD: ${(businessOffpeakKwh || 0).toFixed(0)} kWh`
-              : `, ban ngày ${quoteData?.daytime_usage}%`}
-          </li>
+         <ul className="list-disc space-y-1 pl-4 text-xs text-foreground">
+           <li>
+             Tính cho tải sử dụng{" "}
+             {mounted ? quoteData?.monthly_electricity_cost.toLocaleString("vi-VN") : quoteData?.monthly_electricity_cost} đ/tháng
+             {" "}(~ {mounted ? quoteData?.monthly_electricity_kwh.toLocaleString("vi-VN") : quoteData?.monthly_electricity_kwh} kWh),{" "}
+             điện {electricityType === "business" ? "kinh doanh" : "sinh hoạt"}{" "}
+             {quoteData?.phase_type === '3 phase' ? '3 pha' : '1 pha'}
+             {electricityType === "business"
+               ? `, BT: ${(businessNormalKwh || 0).toFixed(0)}, CD: ${(businessPeakKwh || 0).toFixed(0)}, TD: ${(businessOffpeakKwh || 0).toFixed(0)} kWh`
+               : `, ban ngày ${quoteData?.daytime_usage}%`}
+           </li>
           <li>Bảo hành tận nơi trong 2 năm đầu, sau đó bảo hành theo chính sách nhà sản xuất.</li>
           <li>Báo giá lắp đặt trọn gói cho mái tôn nhà cấp 4 tiêu chuẩn, trường hợp khác cần khảo sát chi tiết.</li>
         </ul>
