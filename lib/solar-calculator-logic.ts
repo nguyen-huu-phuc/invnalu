@@ -40,6 +40,7 @@ export interface InverterProduct {
   factory: string
   install_price: number
   warranty: number
+  sku?: string
 }
 
 export interface PanelProduct {
@@ -50,6 +51,7 @@ export interface PanelProduct {
   is_default: number
   install_price: number
   warranty: number
+  sku?: string
 }
 
 export interface BatteryProduct {
@@ -60,6 +62,7 @@ export interface BatteryProduct {
   dod: number
   install_price: number
   warranty: number
+  sku?: string
 }
 
 export interface ComponentProduct {
@@ -128,12 +131,15 @@ export interface SolarAnalysisResult {
   batteryCapacity: number
   inverterName?: string
   inverterWarranty?: number
+  inverterSku?: string
   inverterCount: number
   panelName?: string
   panelWarranty?: number
+  panelSku?: string
   panelCount: number
   batteryName?: string
   batteryWarranty?: number
+  batterySku?: string
   batteryCount: number
   inverterType: string
   quoteData: QuoteDataInfo
@@ -393,12 +399,15 @@ export function calculateSolarAnalysis(params: {
     batteryCapacity: actualBatteryCapacity,
     inverterName: selectedInverter?.product_name,
     inverterWarranty: selectedInverter?.warranty,
+    inverterSku: selectedInverter?.sku || String(selectedInverter?.id || ''),
     inverterCount,
     panelName: selectedPanel?.product_name,
     panelWarranty: selectedPanel?.warranty,
+    panelSku: selectedPanel?.sku || String(selectedPanel?.id || ''),
     panelCount: actualPanelCount,
     batteryName: selectedBattery?.product_name,
     batteryWarranty: selectedBattery?.warranty,
+    batterySku: selectedBattery?.sku || String(selectedBattery?.id || ''),
     batteryCount: batteryCount,
     inverterType,
     quoteData: quoteDataInfo,

@@ -6,6 +6,7 @@ import type { AcceptPayload } from "@/components/viewer/accept-quote-button"
 import { TrendingUp, DollarSign, Clock, Cpu, Sun, Moon, Battery, Box, Zap, Activity, SolarPanel, BatteryCharging, CircuitBoard, PiggyBank } from "lucide-react"
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react"
 import { formatVND } from "@/lib/utils"
+import "photoswipe/style.css"
 
 function formatVNDWithMutedCurrency(amount: number | null | undefined) {
   const formatted = formatVND(amount)
@@ -55,12 +56,15 @@ interface EconomicAnalysisProps {
   batteryUsable?: number
   inverterName?: string
   inverterWarranty?: number
+  inverterSku?: string
   inverterCount?: number
   panelName?: string
   panelWarranty?: number
+  panelSku?: string
   panelCount?: number
   batteryName?: string
   batteryWarranty?: number
+  batterySku?: string
   batteryCount?: number
   inverterType?: string
   quoteData?: {
@@ -126,12 +130,15 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
   batteryUsable,
   inverterName,
   inverterWarranty,
+  inverterSku,
   inverterCount,
   panelName,
   panelWarranty,
+  panelSku,
   panelCount,
   batteryName,
   batteryWarranty,
+  batterySku,
   batteryCount,
   inverterType,
   quoteData,
@@ -142,12 +149,44 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
       selectedQuoteId,
       onAcceptSuccess,
    }, ref) => {
-  const [mounted, setMounted] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
-  useImperativeHandle(ref, () => cardRef.current as HTMLDivElement)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+   const [mounted, setMounted] = useState(false)
+   const cardRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => cardRef.current as HTMLDivElement)
+    useEffect(() => {
+      setMounted(true)
+    }, [])
+
+    async function openProductImage(sku: string | undefined, alt: string) {
+      if (!sku) return
+      let src = `/images/products/${sku}.webp`
+      try {
+        const res = await fetch(`/api/product-images?sku=${encodeURIComponent(sku)}`)
+        if (res.ok) {
+          const data = await res.json()
+          src = data.primary || src
+        }
+      } catch {
+        // fallback to direct path
+      }
+      try {
+        const { default: PhotoSwipe } = await import('photoswipe')
+        const pswp = new PhotoSwipe({
+          dataSource: [
+            {
+              src,
+              alt: alt || sku,
+              width: 800,
+              height: 800,
+            },
+          ],
+          bgOpacity: 0.75,
+          showHideAnimationType: 'zoom',
+        })
+        pswp.init()
+      } catch {
+        window.open(src, '_blank', 'noopener,noreferrer')
+      }
+    }
 
   const isProposalLocked = proposalStatus === 'confirm' || proposalStatus === 'complete'
 
@@ -181,8 +220,8 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 )}
             </div>
 
-        <div className="w-full rounded-xl border border-border/80 bg-card2 overflow-x-hidden">
-          <table className="w-full text-sm">
+          <div className="w-full rounded-xl border border-border/80 bg-card2 overflow-x-hidden">
+            <table className="w-full text-sm">
             <thead>
                <tr className="bg-muted text-left border-b border-border">
 <th className="px-3 py-2 font-medium text-foreground">Thiết bị</th>
@@ -197,7 +236,12 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 <tr className="hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-2 justify-self-start">
-                      <span className="text-foreground whitespace-normal">Biến tần {inverterName}</span>
+                      <span
+                        className="text-foreground whitespace-normal cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => openProductImage(inverterSku, inverterName)}
+                      >
+                        Biến tần {inverterName}
+                      </span>
                     </div>
                   </td>
                     <td className="py-2.5 text-foreground text-right sm:pl-3 sm:pr-4">{inverterCount}</td>
@@ -208,7 +252,12 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 <tr className="hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-2 justify-self-start">
-                      <span className="text-foreground whitespace-normal">Tấm pin {panelName}</span>
+                      <span
+                        className="text-foreground whitespace-normal cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => openProductImage(panelSku, panelName)}
+                      >
+                        Tấm pin {panelName}
+                      </span>
                     </div>
                   </td>
                     <td className="py-2.5 text-foreground text-right sm:pl-3 sm:pr-4">{panelCount}</td>
@@ -219,7 +268,12 @@ export const EconomicAnalysis = forwardRef<HTMLDivElement, EconomicAnalysisProps
                 <tr className="hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5">
                     <div className="flex items-center gap-2 justify-self-start">
-                      <span className="text-foreground whitespace-normal">Pin lưu trữ {batteryName}</span>
+                      <span
+                        className="text-foreground whitespace-normal cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => openProductImage(batterySku, batteryName)}
+                      >
+                        Pin lưu trữ {batteryName}
+                      </span>
                     </div>
                   </td>
                     <td className="py-2.5 text-foreground text-right sm:pl-3 sm:pr-4">{batteryCount}</td>

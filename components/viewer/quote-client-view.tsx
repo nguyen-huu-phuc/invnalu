@@ -1,6 +1,7 @@
 "use client"
 
-import { useRouter, useCallback } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
 import { EconomicAnalysis } from "@/components/viewer/economic-analysis-viewer"
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog, SolarAnalysisResult } from '@/lib/solar-calculator-logic'
 
@@ -106,12 +107,15 @@ export function QuoteClientView({
               batteryUsable={calcResult.batteryUsable}
               inverterName={calcResult.inverterName}
               inverterWarranty={calcResult.inverterWarranty}
+              inverterSku={calcResult.inverterSku}
               inverterCount={calcResult.inverterCount}
               panelName={calcResult.panelName}
               panelWarranty={calcResult.panelWarranty}
+              panelSku={calcResult.panelSku}
               panelCount={calcResult.panelCount}
               batteryName={calcResult.batteryName}
               batteryWarranty={calcResult.batteryWarranty}
+              batterySku={calcResult.batterySku}
               batteryCount={calcResult.batteryCount}
               inverterType={calcResult.inverterType}
               quoteData={{

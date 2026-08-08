@@ -211,15 +211,18 @@ function PlantTabsView({
                     chargeExcess={calc.chargeExcess}
                     chargeNeeded={calc.chargeNeeded}
                     batteryUsable={calc.batteryUsable}
-                    inverterName={calc.inverterName}
-                    inverterWarranty={calc.inverterWarranty}
-                    inverterCount={calc.inverterCount}
-                    panelName={calc.panelName}
-                    panelWarranty={calc.panelWarranty}
-                    panelCount={calc.panelCount}
-                    batteryName={calc.batteryName}
-                    batteryWarranty={calc.batteryWarranty}
-                    batteryCount={calc.batteryCount}
+                     inverterName={calc.inverterName}
+                     inverterWarranty={calc.inverterWarranty}
+                     inverterSku={calc.inverterSku}
+                     inverterCount={calc.inverterCount}
+                     panelName={calc.panelName}
+                     panelWarranty={calc.panelWarranty}
+                     panelSku={calc.panelSku}
+                     panelCount={calc.panelCount}
+                     batteryName={calc.batteryName}
+                     batteryWarranty={calc.batteryWarranty}
+                     batterySku={calc.batterySku}
+                     batteryCount={calc.batteryCount}
                     inverterType={calc.inverterType}
                     quoteData={{
                       quote_type: 'solar' as const,

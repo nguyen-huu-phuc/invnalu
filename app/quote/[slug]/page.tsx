@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getQuoteProposalBySlug, getQuotesByProposalId, getProducts } from '@/lib/db'
 import { calculateSolarAnalysis, SurveySettings, ItemInfo, ProductCatalog } from '@/lib/solar-calculator-logic'
 import { QuoteClientView } from '@/components/viewer/quote-client-view'
+import { ShareViewLayout } from '@/components/layouts/share-view-layout'
 import { Quote, ProposalData } from '@/types/solar'
 
 export const revalidate = 300
@@ -135,14 +136,14 @@ export default async function QuoteSharePage({ params }: { params: Promise<{ slu
 
   return (
     <>
-      <div className="container mx-auto px-0 py-0 sm:px-4 sm:py-6 max-w-5xl">
-         <QuoteClientView
-           quotes={normalizedQuotes}
-           catalog={catalog}
-           calcResult={calcResult}
-           proposalStatus={proposal.status}
-         />
-      </div>
+      <ShareViewLayout>
+        <QuoteClientView
+          quotes={normalizedQuotes}
+          catalog={catalog}
+          calcResult={calcResult}
+          proposalStatus={proposal.status}
+        />
+      </ShareViewLayout>
     </>
   )
 }
